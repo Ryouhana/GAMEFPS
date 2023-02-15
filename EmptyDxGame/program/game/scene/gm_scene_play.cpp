@@ -25,13 +25,12 @@ void ScenePlay::initialzie() {
 
 
 	//weapon->Initialize();
-	HandGun_Reroad = LoadSoundMem("sound/Gun_SE/HandgunReroad.mp3");
-	debug = LoadGraph("graphics/Ring.png");
+
 	//BGMÄ¶ˆ—
 	//PlaySound1 = LoadSoundMem("sound/escape.mp3");
 	PlaySoundMem(PlaySound1, DX_PLAYTYPE_LOOP + DX_PLAYTYPE_BACK);
 	//SE‚Ì“Ç‚İ‚İ
-	Tama_0 = LoadSoundMem("sound/Gun_SE/no.mp3");
+
 	//‰æ‘œ‚Ì“Ç‚İ‚İ
 
 	//Tama = LoadGraph("graphics/tama.png");
@@ -179,40 +178,8 @@ void ScenePlay::update(float delta_time)
 	}
 
 
-	if (tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT) && !GunReroad) {
-		if (weapon->ammoClip > 0) {
-			PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);
+	
 
-			weapon->ammoClip--;
-		}
-
-		if (weapon->ammoClip <= 0) {
-			weapon->ammoClip = 0;
-			PlaySoundMem(Tama_0, DX_PLAYTYPE_BACK);
-		}
-	}
-
-	if (tnl::Input::IsKeyDownTrigger(eKeys::KB_R)) {
-		amountNeed = weapon->maxAmmoClip - weapon->ammoClip;
-		//ƒ}ƒKƒWƒ“‚É•â[‚·‚é‚×‚«’e–ò”‚æ‚èŠ‚µ‚Ä‚é’e–ò”‚ª‘å‚«‚¢‚©
-		ammoAvailable = amountNeed < weapon->ammunition ? amountNeed : weapon->ammunition;
-		if (amountNeed != 0 && weapon->ammunition != 0) {
-			if (!GunReroad)PlaySoundMem(HandGun_Reroad, DX_PLAYTYPE_BACK);
-			GunReroad = true;
-		}
-
-
-	}
-	if (GunReroad) {
-		debug_i += 2.0f;
-
-		if (debug_i >= 100) {
-			weapon->ammunition -= ammoAvailable;
-			weapon->ammoClip += ammoAvailable;
-			debug_i = 0;
-			GunReroad = false;
-		}
-	}
 	//----------------------------------------------------------------
 	//ƒJ[ƒ\ƒ‹‚Ì§Œä
 	//----------------------------------------------------------------
@@ -220,13 +187,14 @@ void ScenePlay::update(float delta_time)
 	GetClipCursor(&rcOldClip);
 
 	RECT rcClip;
-	GetWindowRect(GetMainWindowHandle() + 100, &rcClip);
+	GetWindowRect(GetMainWindowHandle(), &rcClip);
 	ClipCursor(&rcClip);
 
 	ClipCursor(&rcOldClip);
 
 	if (tnl::Input::IsKeyDownTrigger(eKeys::KB_RETURN)) {
 		mgr->chengeScene(new SceneResult());
+		
 	}
 
 
@@ -267,7 +235,7 @@ void ScenePlay::render()
 	DrawBox(60, 700, 60 + 200, 700 + 20, STcolor, FALSE);		//˜g‚ğ•`‰æ
 	DrawBox(60, 700, 60 + 200 * player->stamina / player->staminaMax, 700 + 20, STcolor, TRUE);	//HPƒQ[ƒW‚ğ•`‰æ
 
-	DrawCircleGauge(rei_x + 5, rei_y + 8.5f, debug_i, debug, 0.0f, 0.08f);
+	
 
 
 

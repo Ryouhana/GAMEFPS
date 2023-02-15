@@ -33,18 +33,16 @@ public:
 	Player* player = nullptr;
 	Weapon* weapon = nullptr;
 
-	//•â[‚·‚é‚×‚«’e–ò‚Ì•Ï”‚Æ•â[‚·‚é’e–ò‚Ì•Ï”
-	int amountNeed = 0, ammoAvailable = 0;
+
 	int box_parts = 0;
 	int round = 1;
 	int StaminaImage = 0;
 	int HpImage = 0;
 	int Tama = 0;
-	int Tama_0 = 0;
+	
 
 	int PlaySound1 = 0;
-	int debug = 0;
-	int HandGun_Reroad = 0;
+
 	int Walk_SE = 0, Run_SE = 0;
 
 
@@ -56,12 +54,12 @@ public:
 	float floor_x = 0, floor_y = 0;
 	float tree_x = 0;
 	float enemy_v = 0;
-	double debug_i = 0.f;
+	
 
 	bool go_guns = false;
 	bool hitPlayerFlag = false;
 	bool shoot_flag = false;
-	bool GunReroad = false;
+	
 
 
 

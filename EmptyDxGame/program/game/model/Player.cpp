@@ -58,6 +58,12 @@ void Player::Update(float deltaTime)
 	if (!walkFlag || dushFlag) {
 		StopSoundMem(Walk_SE);
 	}
+	if (dushFlag) {
+		PlaySoundMem(Run_SE, DX_PLAYTYPE_LOOP, 0);
+	}
+	if (!dushFlag) {
+		StopSoundMem(Run_SE);
+	}
 	/*if (tnl::Input::IsKeyDown(eKeys::KB_W)|| tnl::Input::IsKeyDown(eKeys::KB_S) ||
 		tnl::Input::IsKeyDown(eKeys::KB_A)|| tnl::Input::IsKeyDown(eKeys::KB_D)) {
 		walkFlag = true;
