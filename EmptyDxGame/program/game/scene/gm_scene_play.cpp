@@ -150,6 +150,7 @@ void ScenePlay::update(float delta_time)
 		player->hp = 0;
 		if (!go_guns) {
 			StopSoundMem(PlaySound1);
+			StopSoundMem(Walk_SE);
 			mgr->ZombieSound = LoadSoundMem("sound/Zombi_SE/eat.mp3");
 			PlaySoundMem(mgr->ZombieSound, DX_PLAYTYPE_BACK);
 			go_guns = true;

@@ -38,7 +38,7 @@ void Weapon::Update(float deltaTime) {
 			HandGunFlag = true;
 		}
 		else HandGunFlag = false;
-		if (HandGunFlag) {
+		if (W_type == HandGun) {
 			if (tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT) && !GunReroad) {
 				if (ammoClip > 0) {
 					PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);

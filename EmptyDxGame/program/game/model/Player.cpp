@@ -156,6 +156,7 @@ void Player::Move(int i)
 		timer = 0.f;
 		Dush(i);
 	}
+
 	else mainCamera->pos_ += move_direction * walkSpeed;
 
 	mainCamera->pos_.x = clamp(mainCamera->pos_.x,

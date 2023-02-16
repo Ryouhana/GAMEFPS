@@ -11,6 +11,7 @@ public:
 		AssaultRifle
 
 	};
+	WeaponType W_type;
 	Weapon();
 	~Weapon() {};
 	int HandGunImage = 0;
