@@ -48,7 +48,6 @@ void Weapon::Update(float deltaTime) {
 	else SubMachineGunFlah = false;
 	if (mousewheel == AssaultRifle) {
 		if (!AssaultRifleFlag) {
-
 			reroadtime = assault_status.reroadtime;
 			ammunition = assault_status.ammunition;
 			maxAmmunition = assault_status.maxAmmunition;
@@ -63,7 +62,6 @@ void Weapon::Update(float deltaTime) {
 	else AssaultRifleFlag = false;
 	if (mousewheel == HandGun) {
 		if (!HandGunFlag) {
-
 			reroadtime = hand_status.reroadtime;
 			ammunition = hand_status.ammunition;
 			maxAmmunition = hand_status.maxAmmunition;
@@ -87,18 +85,7 @@ void Weapon::Update(float deltaTime) {
 		}
 
 	}
-		if (tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT) && !GunReroad) {
-			if (ammoClip > 0) {
-				PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);
-
-				ammoClip--;
-			}
-
-			if (ammoClip <= 0) {
-				ammoClip = 0;
-				PlaySoundMem(Tama_0, DX_PLAYTYPE_BACK);
-			}
-		}
+	
 
 		if (tnl::Input::IsKeyDownTrigger(eKeys::KB_R)) {
 			amountNeed = maxAmmoClip - ammoClip;
@@ -133,31 +120,70 @@ void Weapon::Render() {
 }
 
 void Weapon::SwitchWeapon(WeaponType weapontype) {
+	GameManager* mgr = GameManager::GetInstance();
 	switch (weapontype) {
 	case WeaponType::AssaultRifle:
-		
 		NormalWeaponImage = assault_status.AssaultRifleImage;
 		NormalWeapon_Reroad = assault_status.AssaultRifle_Reroad;
-		
 		reroad_x = assault_status.reroad_x;
 		reroad_y = assault_status.reroad_y;
+		shoottime++;
+		if (tnl::Input::IsMouseDown(tnl::Input::eMouse::LEFT) && !GunReroad && shoottime >= assault_status.shoottime) {
+
+			if (ammoClip > 0) {
+				PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);
+
+				ammoClip--;
+			}
+
+			if (ammoClip <= 0) {
+				ammoClip = 0;
+				PlaySoundMem(Tama_0, DX_PLAYTYPE_BACK);
+			}
+			shoottime = 0;
+		}
 		break;
 	case WeaponType::HandGun:
-		
 		NormalWeaponImage = hand_status.HandGunImage;
 		NormalWeapon_Reroad = hand_status.HandGun_Reroad;
-		
-		
 		reroad_x = hand_status.reroad_x;
 		reroad_y = hand_status.reroad_y;
+		shoottime++;
+		if (tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT) && !GunReroad && shoottime >= hand_status.shoottime) {
+			
+			if (ammoClip > 0) {
+				PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);
+
+				ammoClip--;
+			}
+
+			if (ammoClip <= 0) {
+				ammoClip = 0;
+				PlaySoundMem(Tama_0, DX_PLAYTYPE_BACK);
+			}
+			shoottime = 0;
+		}
 		break;
 	case WeaponType::SubMachineGun:
-	
 		NormalWeaponImage = sub_status.SubMachineGunImage;
 		NormalWeapon_Reroad = sub_status.SubMachinGun_Rrroad;
-		
 		reroad_x = sub_status.reroad_x;
 		reroad_y = sub_status.reroad_y;
+		shoottime++;
+		if (tnl::Input::IsMouseDown(tnl::Input::eMouse::LEFT) && !GunReroad && shoottime >= sub_status.shoottime) {
+
+			if (ammoClip > 0) {
+				PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);
+
+				ammoClip--;
+			}
+
+			if (ammoClip <= 0) {
+				ammoClip = 0;
+				PlaySoundMem(Tama_0, DX_PLAYTYPE_BACK);
+			}
+			shoottime = 0;
+		}
 		break;
 	default:
 		return;

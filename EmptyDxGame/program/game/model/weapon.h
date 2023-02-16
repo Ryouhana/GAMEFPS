@@ -21,9 +21,10 @@ public:
 		int ammunition = 60, maxAmmunition = 60, ammoClip = 15, maxAmmoClip = 15;
 		//•â[‚·‚é‚×‚«’e–ò‚Ì•Ï”‚Æ•â[‚·‚é’e–ò‚Ì•Ï”
 		int amountNeed = 0, ammoAvailable = 0;
+		int HandGun_Reroad = 0;
 		float reroad_x = 500.0, reroad_y = 400.0;
 		float reroadtime = 2.0f;
-		int HandGun_Reroad = 0;
+		float shoottime = 20.0f;
 	};
 	HandGunStatus hand_status;
 
@@ -33,10 +34,10 @@ public:
 		int ammunition = 110, maxAmmunition = 110, ammoClip = 25, maxAmmoClip = 25;
 		//•â[‚·‚é‚×‚«’e–ò‚Ì•Ï”‚Æ•â[‚·‚é’e–ò‚Ì•Ï”
 		int amountNeed = 0, ammoAvailable = 0;
-		float reroad_x = 500.0, reroad_y = 400.0;
-		float reroadtime = 3.0f;
 		int SubMachinGun_Rrroad = 0;
-	
+		float reroad_x = 500.0, reroad_y = 400.0;
+		float reroadtime = 1.5f;
+		float shoottime = 5.0f;
 	};
 	SubMachineGunStatus sub_status;
 
@@ -46,9 +47,11 @@ public:
 		int ammunition = 90, maxAmmunition = 90, ammoClip = 30, maxAmmoClip = 30;
 		//•â[‚·‚é‚×‚«’e–ò‚Ì•Ï”‚Æ•â[‚·‚é’e–ò‚Ì•Ï”
 		int amountNeed = 0, ammoAvailable = 0;
-		float reroad_x = 500.0, reroad_y = 400.0;
-		float reroadtime = 4.0f;
 		int AssaultRifle_Reroad = 0;
+		float reroad_x = 500.0, reroad_y = 400.0;
+		float reroadtime = 0.8f;
+		float shoottime = 8.0f;
+		
 	};
 	AssaultRifleStatus assault_status;
 	
@@ -71,6 +74,7 @@ public:
 	int amountNeed = 0, ammoAvailable = 0;
 	int debug = 0;
 	int Tama_0 = 0;
+	float shoottime = 0;
 	float reroad_x = 500.0, reroad_y = 400.0;
 	double normalreroad_time = 0;
 	float reroadtime = 0.f;
