@@ -114,7 +114,7 @@ void Weapon::Render() {
 		DrawStringEx(895, 720, -1, "/%d", ammunition);
 
 		DrawRotaGraph(775, 720, 0.15f, 0, NormalWeaponImage, true);
-		DrawCircleGauge(reroad_x + 5, reroad_y + 8.5f, normalreroad_time, debug, 0.0f, 0.08f);
+		DrawCircleGauge(reroad_x + 5, reroad_y + 8.5f, normalreroad_time, debug, 0.0f, 0.09f);
 	//}
 	DrawStringEx(840, 600, -1, "%d", mousewheel);
 }

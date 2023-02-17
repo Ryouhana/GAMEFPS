@@ -150,15 +150,16 @@ void ScenePlay::update(float delta_time)
 		player->hp = 0;
 		if (!go_guns) {
 			StopSoundMem(PlaySound1);
-			StopSoundMem(Walk_SE);
 			mgr->ZombieSound = LoadSoundMem("sound/Zombi_SE/eat.mp3");
 			PlaySoundMem(mgr->ZombieSound, DX_PLAYTYPE_BACK);
 			go_guns = true;
 		}
 		g_oTime += delta_time;
 		player->GetCamera()->c_rot.x -= 0.001f;
-		if (g_oTime > 10) {
+		if (g_oTime > 5) {
 			mgr->chengeScene(new SceneGameOver());
+			StopSoundMem(Walk_SE);
+			StopSoundMem(Run_SE);
 			g_oTime = 0;
 			player->hp = 100;
 		}
