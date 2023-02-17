@@ -65,15 +65,16 @@ public:
 	int title_back = 0;
 	int mouse_cursor = 0;
 	int background = 0;
-	int Mouse;
+	int Mouse = 0;
 	int juge = 0;
-	int x, y;
+	int x = 0, y = 0;
 	int m_state_c = 0;
 	int juukon = 0;
 	int juusei = 0, juudan = 0;
 	int juuim = 0;
 	int ZombieSound = 0;
 	int TitleMusic = 0;
+
 
 
 

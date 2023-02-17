@@ -7,17 +7,21 @@
 
 
 
+
+
 void SceneGameOver::initialzie() {
 	//‰æ‘œ‚Ì“Ç‚İ‚İ
 	G_oImage = LoadGraph("graphics/gameover.jpg");
 	G_oRed = LoadGraph("graphics/Red.png");
 	G_oSE = LoadSoundMem("sound/");
+	
+	
 }
 
 void SceneGameOver::update(float delta_time)
 {
 	GameManager* mgr = GameManager::GetInstance();
-
+	
 
 
 

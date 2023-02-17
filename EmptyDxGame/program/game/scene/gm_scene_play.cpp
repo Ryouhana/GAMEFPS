@@ -23,7 +23,7 @@ ScenePlay::~ScenePlay() {
 
 void ScenePlay::initialzie() {
 
-
+	player->hp = 100;
 	//weapon->Initialize();
 
 	//BGM再生処理
@@ -148,6 +148,7 @@ void ScenePlay::update(float delta_time)
 	//プレイヤーの死亡処理
 	if (player->hp <= 0) {
 		player->hp = 0;
+		
 		if (!go_guns) {
 			StopSoundMem(PlaySound1);
 			mgr->ZombieSound = LoadSoundMem("sound/Zombi_SE/eat.mp3");
@@ -156,12 +157,11 @@ void ScenePlay::update(float delta_time)
 		}
 		g_oTime += delta_time;
 		player->GetCamera()->c_rot.x -= 0.001f;
-		if (g_oTime > 5) {
+		if (g_oTime > 3) {
 			mgr->chengeScene(new SceneGameOver());
-			StopSoundMem(Walk_SE);
-			StopSoundMem(Run_SE);
+			
 			g_oTime = 0;
-			player->hp = 100;
+			
 		}
 	}
 
@@ -170,14 +170,15 @@ void ScenePlay::update(float delta_time)
 
 	}*/
 
+	//プレイヤーと敵が接触した時のhp減少フラグ
 	if (hitPlayerFlag) {
 		player->hp -= 2;
 	}
-	if (shoot_flag) {
+	/*if (shoot_flag) {
 		if (tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
 			player->hp -= 10;
 		}
-	}
+	}*/
 
 
 	

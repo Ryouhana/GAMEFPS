@@ -1,8 +1,8 @@
-
 #include "gm_scene_base.h"
 #include "../model/gm_parts.h"
 #include "../gm_camera.h"
 #include "../model/gm_airplane.h"
+#include "../model/Player.h"
 #include "../model/gm_model.h"
 
 class GmCamera;
@@ -23,7 +23,7 @@ public:
 	int m_x = 300, m_y = 500, m_x1 = 600, m_y1 = 500;
 	int color = 0, color1 = 0;
 
-	char	m_name[4], m_name1[5];	// €–Ú–¼Ši”[—p•Ï”
+	char	m_name[4] = {}, m_name1[5] = {};	// €–Ú–¼Ši”[—p•Ï”
 
 
 

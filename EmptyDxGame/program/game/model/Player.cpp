@@ -3,12 +3,14 @@ using namespace std;
 
 Player::Player(tnl::Vector3 pos)
 {
+	
 	mainCamera = new GmCamera();
 	mainCamera->ctrl = GmCamera::CTRL_TYPE_QTN;
 	mainCamera->pos_ = pos;//{ 100, 60, 0 };
 	body = dxe::Mesh::CreateSphereMV(30);
 	Walk_SE = LoadSoundMem("sound/Walk_SE.mp3");
 	Run_SE = LoadSoundMem("sound/Run_SE.mp3");
+	
 }
 
 void Player::Initialize(tnl::Vector3 pos)
@@ -19,6 +21,7 @@ void Player::Initialize(tnl::Vector3 pos)
 	/*Walk_SE = LoadSoundMem("sound/Walk_SE.mp3");
 	Run_SE = LoadSoundMem("sound/Run_SE.mp3");*/
 	body = dxe::Mesh::CreateSphereMV(30);
+	
 
 }
 
@@ -26,17 +29,18 @@ float timer = 0;
 tnl::Vector3 msv = { DXE_WINDOW_WIDTH / 2, DXE_WINDOW_HEIGHT / 2, 0 };
 void Player::Update(float deltaTime)
 {
+
 	CameraAngle();
 
 	// プレイヤーのダッシュ処理
 	if (tnl::Input::IsKeyDown(eKeys::KB_LSHIFT) && tnl::Input::IsKeyDown(eKeys::KB_W)) {
-		if (stamina > 0.f) {
-			dushFlag = true;
+		if (hp != 0) {
+			if (stamina > 0.f) {
+				dushFlag = true;
 
+			}
 		}
-		if (walkFlag) {
-
-		}
+		
 
 	}
 	else {
@@ -51,52 +55,36 @@ void Player::Update(float deltaTime)
 	if (!dushFlag) {
 		RecoveryStamina(deltaTime);
 	}
-	Move(0);
-	if (walkFlag) {
-		PlaySoundMem(Walk_SE, DX_PLAYTYPE_LOOP, 0);
-	}
-	if (!walkFlag || dushFlag) {
-		StopSoundMem(Walk_SE);
-	}
-	if (dushFlag) {
-		PlaySoundMem(Run_SE, DX_PLAYTYPE_LOOP, 0);
-	}
-	if (!dushFlag) {
-		StopSoundMem(Run_SE);
-	}
-	/*if (tnl::Input::IsKeyDown(eKeys::KB_W)|| tnl::Input::IsKeyDown(eKeys::KB_S) ||
-		tnl::Input::IsKeyDown(eKeys::KB_A)|| tnl::Input::IsKeyDown(eKeys::KB_D)) {
-		walkFlag = true;
-
+	// プレイヤーの移動処理関数（HPが0になったら実行されない）
+	if (hp > 0) {
+		Move(0);
 	}
 	else {
 		walkFlag = false;
-	}*/
-
-
-	/*if (tnl::Input::IsKeyDown(eKeys::KB_W)) {
-		Move(0);
+		dushFlag = false;
 	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_S)) {
-		Move(2);
+
+	//歩いてる時の足音
+	if (walkFlag) {
+		PlaySoundMem(Walk_SE, DX_PLAYTYPE_LOOP, 0);
 	}
-	else if(tnl::Input::IsKeyDown(eKeys::KB_D)) {
-		Move(1);
+	//歩いてる音を止める
+	if (!walkFlag || dushFlag) {
+		StopSoundMem(Walk_SE);
 	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_A)) {
-		Move(3);
-	}*/
-
-
-
-
+	//走ってる時の足音
+	if (dushFlag) {
+		PlaySoundMem(Run_SE, DX_PLAYTYPE_LOOP, 0);
+	}
+	//走ってる音を止める
+	if (!dushFlag) {
+		StopSoundMem(Run_SE);
+	}
 
 	// プレイヤーのジャンプ処理
 	if (tnl::Input::IsKeyDownTrigger(eKeys::KB_SPACE)) {
 		jumpFlag = true;
 	}
-
-
 
 	//レイのやつ
 	/*tnl::Vector3 ray = tnl::Vector3::CreateScreenRay(
@@ -128,10 +116,11 @@ GmCamera* Player::GetCamera()
 void Player::Move(int i)
 {
 
-	moveDirection[0] = mainCamera->front().xz();
-	moveDirection[1] = mainCamera->right().xz();
-	moveDirection[2] = mainCamera->back().xz();
-	moveDirection[3] = mainCamera->left().xz();
+		moveDirection[0] = mainCamera->front().xz();
+		moveDirection[1] = mainCamera->right().xz();
+		moveDirection[2] = mainCamera->back().xz();
+		moveDirection[3] = mainCamera->left().xz();
+	
 
 	tnl::Vector3 move_direction;
 	tnl::Input::RunIndexKeyDown([&](uint32_t idx) {
