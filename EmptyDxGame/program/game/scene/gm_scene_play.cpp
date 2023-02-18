@@ -29,9 +29,7 @@ void ScenePlay::initialzie() {
 	//BGM再生処理
 	//PlaySound1 = LoadSoundMem("sound/escape.mp3");
 	PlaySoundMem(PlaySound1, DX_PLAYTYPE_LOOP + DX_PLAYTYPE_BACK);
-	//SEの読み込み
-
-	//画像の読み込み
+	
 
 	//Tama = LoadGraph("graphics/tama.png");
 	HpImage = LoadGraph("graphics/HP.png");
@@ -104,7 +102,7 @@ void ScenePlay::update(float delta_time)
 
 	hitPlayerFlag = false;
 	for (int i = 0; i < Popcap; i++) {
-		// エネミーのプレイヤー追跡
+		// ーーーーーーーーーーーエネミーのプレイヤー追跡ーーーーーーーーーーー
 		zombi_[i]->pos_;
 		float A = player->GetPostion().x - zombi_[i]->pos_.x;
 		float B = player->GetPostion().z - zombi_[i]->pos_.z;
@@ -127,14 +125,14 @@ void ScenePlay::update(float delta_time)
 
 	}
 	for (int i = 0; i < Popcap; i++) {
-		// ゾンビとプレイヤーの当たり判定
+		// ーーーーーーーーーーーーーーゾンビとプレイヤーの当たり判定ーーーーーーーーーー
 		if (tnl::IsIntersectAABB(zombi_[i]->pos_,
 			{ obb_x,obb_y,obb_x }, player->GetPostion(), { obb_x,obb_y,obb_x })) {
 
 			hitPlayerFlag = true;
 		}
 
-		// クロスヘアとゾンビの当たり判定
+		// ーーーーーーーーーーークロスヘアとゾンビの当たり判定ーーーーーーーーーーーーー
 		tnl::Vector3 a_max = tnl::ToMaxAABB(zombi_[i]->pos_, { obb_x,obb_y,obb_x });
 		tnl::Vector3 a_min = tnl::ToMinAABB(zombi_[i]->pos_, { obb_x,obb_y,obb_x });
 	}
@@ -145,16 +143,16 @@ void ScenePlay::update(float delta_time)
 
 	}*/
 
-	//プレイヤーの死亡処理
+	//ーーーーーーーーーーーープレイヤーの死亡処理ーーーーーーーーーーーーー
 	if (player->hp <= 0) {
 		player->hp = 0;
-		
-		if (!go_guns) {
+		if (!go_guns) {  //プレイヤーのHPが0になった時の演出処理（SEなど）
 			StopSoundMem(PlaySound1);
 			mgr->ZombieSound = LoadSoundMem("sound/Zombi_SE/eat.mp3");
 			PlaySoundMem(mgr->ZombieSound, DX_PLAYTYPE_BACK);
 			go_guns = true;
 		}
+		//HPが0になってから数秒後にシーン移行またカメラの演出
 		g_oTime += delta_time;
 		player->GetCamera()->c_rot.x -= 0.001f;
 		if (g_oTime > 3) {
@@ -164,6 +162,7 @@ void ScenePlay::update(float delta_time)
 			
 		}
 	}
+
 
 	tnl::Matrix zombi;
 	/*if (tnl::IsIntersectLinePlane(camera_->pos_, camera_->pos_ + (ray * 10000.0f), { 10, 10, 10 }, { 0, 1, 0 }, &hit)) {
