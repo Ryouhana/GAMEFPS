@@ -215,6 +215,7 @@ void ScenePlay::render()
 
 	SetFontSize(20); //•¶š‚Ì‘å‚«‚³‚ğ•ÏX
 	zombie->Render();
+	
 	//ƒ]ƒ“ƒr‚Ì•`‰æˆ—
 	for (int i = 0; i < Popcap; i++) {
 

@@ -1,14 +1,18 @@
 #include "weapon.h"
 #include "../gm_manager.h"
+#include "../scene/gm_scene_play.h"
 using namespace std;
 
 Weapon::Weapon() {
 	hand_status.HandGunImage = LoadGraph("graphics/Handgun.png");
 	sub_status.SubMachineGunImage = LoadGraph("graphics/MP5.png");
-	assault_status.AssaultRifleImage = LoadGraph("graphics/AK-47.png");
+	assault_status.AssaultRifleImage = LoadGraph("graphics/XM177.png");
+	/*hand_status.HandGunModelHandle = MV1LoadModel("MEUPistol/MEUPistol.pmd");
+	assault_status.AssaultModelHandle = MV1LoadModel("XM177/Xm177.pmx");*/
 	Tama_0 = LoadSoundMem("sound/Gun_SE/no.mp3");
 	HandGun_Reroad = LoadSoundMem("sound/Gun_SE/HandgunReroad.mp3");
 	debug = LoadGraph("graphics/Ring.png");
+	//player_ = new Player({ 100, 60, 0 });
 }
 void Weapon::Initialize() {
 
@@ -117,6 +121,32 @@ void Weapon::Render() {
 		DrawCircleGauge(reroad_x + 5, reroad_y + 8.5f, normalreroad_time, debug, 0.0f, 0.09f);
 	//}
 	DrawStringEx(840, 600, -1, "%d", mousewheel);
+	//MATRIX view, proj;
+	//memcpy(view.m, player_->GetCamera()->view_.m, sizeof(float) * 16);
+	//memcpy(proj.m, player_->GetCamera()->proj_.m, sizeof(float) * 16);
+	//SetCameraViewMatrix(view);
+	//SetupCamera_ProjectionMatrix(proj);
+	//DxLib::VECTOR vp;
+	//vp = VGet(pos_.x, pos_.y, pos_.z);
+	////rot_(tnl::QuaternionŒ^)‚ðMATRIXŒ^‚É•ÏŠ·
+	//MATRIX rot;
+	//memcpy(rot.m, rot_.getMatrix().m, sizeof(float) * 16);
+
+	//MV1SetRotationMatrix(ModelHandle, rot);
+	//MV1SetScale(ModelHandle, { 1.0f,1.0f,1.0f });
+	//MV1SetPosition(ModelHandle, vp);
+
+	//MV1SetRotationXYZ(assault_status.AssaultModelHandle, VGet(angleX, angleY, 0.0f));
+	//MV1SetScale(assault_status.AssaultModelHandle, { 1.0f,1.0f,1.0f });
+	//MV1SetPosition(assault_status.AssaultModelHandle, VGet(x, y, z));
+
+	//MV1SetRotationMatrix(hand_status.HandGunModelHandle, rot);
+	//MV1SetScale(hand_status.HandGunModelHandle, { 1.0f,1.0f,1.0f });
+	//MV1SetPosition(hand_status.HandGunModelHandle, vp);
+	//// ‚R‚cƒ‚ƒfƒ‹‚Ì•`‰æ
+	//MV1DrawModel(ModelHandle);
+	//MV1DrawModel(assault_status.AssaultModelHandle);
+	//MV1DrawModel(hand_status.HandGunModelHandle);
 }
 
 void Weapon::SwitchWeapon(WeaponType weapontype) {

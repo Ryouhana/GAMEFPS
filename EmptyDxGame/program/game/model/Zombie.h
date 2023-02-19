@@ -20,7 +20,7 @@ public:
 	void Initialize();
 	void Update(float deltaTime);
 	void Render();
-
+	int ModelHandle = 0;
 
 private:
 

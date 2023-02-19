@@ -37,7 +37,7 @@ void SceneTutorial::render()
 	GameManager* mgr = GameManager::GetInstance();
 	DrawRotaGraph(530, 480, 0.9, 0, TutorialBack, true);
 	DrawRotaGraph(530, image_y, 0.9, 0, TutorialImage, true);
-	if (image_y == 540) {
+	if (image_y == 540.f) {
 
 
 		DrawRotaGraph(870, 400, 1.5, 0, TutorialGuid, true);

@@ -2,6 +2,7 @@
 #include "../../dxlib_ext/dxlib_ext.h"
 #include "../gm_camera.h"
 #include "Player.h"
+//#include "../scene/gm_scene_play.h"
 
 class Weapon {
 public:
@@ -15,8 +16,14 @@ public:
 	
 	Weapon();
 	~Weapon() {};
+	//Player* player_ = nullptr;
+	
+	//int ModelHandle = 0;
+	
+	
 	struct HandGunStatus {
 		int HandGunImage = 0;
+		//int HandGunModelHandle = 0;
 		//Š’e–òAÅ‚Š’e–òAƒ}ƒKƒWƒ““à‚Ì’e”Aƒ}ƒKƒWƒ““à‚ÌÅ‘å”
 		int ammunition = 60, maxAmmunition = 60, ammoClip = 15, maxAmmoClip = 15;
 		//•â[‚·‚é‚×‚«’e–ò‚Ì•Ï”‚Æ•â[‚·‚é’e–ò‚Ì•Ï”
@@ -43,6 +50,7 @@ public:
 
 	struct AssaultRifleStatus {
 		int AssaultRifleImage = 0;
+		//int AssaultModelHandle = 0;
 		//Š’e–òAÅ‚Š’e–òAƒ}ƒKƒWƒ““à‚Ì’e”Aƒ}ƒKƒWƒ““à‚ÌÅ‘å”
 		int ammunition = 90, maxAmmunition = 90, ammoClip = 30, maxAmmoClip = 30;
 		//•â[‚·‚é‚×‚«’e–ò‚Ì•Ï”‚Æ•â[‚·‚é’e–ò‚Ì•Ï”
@@ -54,7 +62,10 @@ public:
 		
 	};
 	AssaultRifleStatus assault_status;
-	
+
+	//tnl::Quaternion rot_;
+	//tnl::Vector3 pos_;
+
 	
 	//•Ší‚Ì‰æ‘œ
 	int HandGunImage = 0;
@@ -76,8 +87,10 @@ public:
 	int Tama_0 = 0;
 	float shoottime = 0;
 	float reroad_x = 500.0, reroad_y = 400.0;
-	double normalreroad_time = 0;
 	float reroadtime = 0.f;
+	//float x = 0, y = 0, z = 0;
+	//float angleX = 0, angleY = 0, angleZ = 0;
+	double normalreroad_time = 0;
 	void Initialize();
 	void Update(float deltaTime);
 	void Render();

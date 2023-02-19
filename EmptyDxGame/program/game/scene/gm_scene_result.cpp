@@ -6,15 +6,17 @@
 void SceneResult::initialzie() {
 	
 	HelpImage = LoadGraph("graphics/help.jpg");
+
 	//3Dモデルの読み込み
-	ModelHandle = MV1LoadModel("zombietaro/zombie.pmx");
-	AssaultModelHandle = MV1LoadModel("XM177/Xm177.pmx");
+	//>>>>>ModelHandle = MV1LoadModel("zombietaro/zombie.pmx");
+	
+	
 	// 再生時間の初期化
 	PlayTime = 0.0f;
 	// ３Ｄモデルの1番目のアニメーションをアタッチする
-	AttachIndex = MV1AttachAnim(ModelHandle, 4, -1);
+	//>>>>>AttachIndex = MV1AttachAnim(ModelHandle, 4, -1);
 	result_Camera = new GmCamera();
-	result_Camera->pos_ = { 0,0,0 };
+	result_Camera->pos_ = { 0,50,-100 };
 }
 
 void SceneResult::update(float delta_time)
@@ -27,14 +29,10 @@ void SceneResult::update(float delta_time)
 	
 
 	//pos_(tnl::Vector3型)をDxLib_VECTOR型に変換
-	DxLib::VECTOR vp;
-	vp = VGet(pos_.x, pos_.y, pos_.z);
-	//rot_(tnl::Quaternion型)をMATRIX型に変換
-	MATRIX rot;
-	memcpy(rot.m, rot_.getMatrix().m, sizeof(float) * 16);
-	DxLib::VECTOR cp;
+	
+	/*DxLib::VECTOR cp;
 	cp = VGet(result_Camera->pos_.x, result_Camera->pos_.y, result_Camera->pos_.z);
-	cp = {pos_.x,pos_.y,pos_.z};
+	cp = {pos_.x,pos_.y,pos_.z};*/
 	////奥行0.1～1000までをカメラの描画範囲とする
 	//SetCameraNearFar(0.1f, 1000.0f);
 
@@ -44,36 +42,36 @@ void SceneResult::update(float delta_time)
 
 
 	// アタッチしたアニメーションの総再生時間を取得する
-	TotalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
+	//>>>>>TotalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
 
 
 
 
-	if (tnl::Input::IsKeyDown(eKeys::KB_W)) {
-		pos_.y -= 2.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_S)) {
-		pos_.y += 2.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_A)) {
-		pos_.x -= 2.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_D)) {
-		pos_.x += 2.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_Q)) {
-		pos_.z -= 2.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_E)) {
-		pos_.z += 2.1f;
-	}
+	//if (tnl::Input::IsKeyDown(eKeys::KB_W)) {
+	//	pos_.y -= 0.1f;
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_S)) {
+	//	pos_.y += 0.1f;
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_A)) {
+	//	pos_.x -= 0.1f;
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_D)) {
+	//	pos_.x += 0.1f;
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_Q)) {
+	//	pos_.z -= 0.1f;
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_E)) {
+	//	pos_.z += 0.1f;
+	//}
 
-	if (tnl::Input::IsKeyDown(eKeys::KB_Z)) {
-		angleX-= 0.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_X)) {
-		angleY += 0.1f;
-	}
+	//if (tnl::Input::IsKeyDown(eKeys::KB_Z)) {
+	//	rot_ *= tnl::Quaternion::RotationAxis({ 1,0,0 }, tnl::ToRadian(5));
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_X)) {
+	//	rot_ *= tnl::Quaternion::RotationAxis({ 0,1,0 },tnl::ToRadian(5));
+	//}
 
 	// 再生時間を進める
 	PlayTime += 1;
@@ -84,16 +82,9 @@ void SceneResult::update(float delta_time)
 	}
 
 	// 再生時間をセットする
-	MV1SetAttachAnimTime(ModelHandle, AttachIndex, PlayTime);
+	//>>>>>>MV1SetAttachAnimTime(ModelHandle, AttachIndex, PlayTime);
 	//第二引数の回転角度をセット
-	MV1SetRotationMatrix(ModelHandle, rot);
-	MV1SetScale(ModelHandle, { 1.0f,1.0f,1.0f });
-	MV1SetPosition(ModelHandle, vp);
-
-	MV1SetRotationXYZ(AssaultModelHandle, VGet(angleX, angleY, 0.0f));
-	MV1SetScale(AssaultModelHandle, { 1.0f,1.0f,1.0f });
-	MV1SetPosition(AssaultModelHandle, VGet(x, y, z));
-
+	
 
 	if (tnl::Input::IsKeyDownTrigger(eKeys::KB_RETURN)) {
 		mgr->chengeScene(new SceneTitle());
@@ -102,13 +93,15 @@ void SceneResult::update(float delta_time)
 
 void SceneResult::render()
 {
+
 	result_Camera->update();
-	/*ModelHandle->render(result_Camera);*/
-	// ３Ｄモデルの描画
-	MV1DrawModel(ModelHandle);
 	
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "x=%.1f y=%.1f z=%.1f", x, y, z);
-	MV1DrawModel(AssaultModelHandle);
+
+	/*ModelHandle->render(result_Camera);*/
+	
+
+	
+	//DrawFormatString(0, 0, GetColor(255, 255, 255), "x=%.1f y=%.1f z=%.1f", x, y, z);
 	
 	/*DrawRotaGraph(520, 410, 0.9, 0, HelpImage,true);
 	DrawStringEx(440, 50, -1, "操作方法");*/
