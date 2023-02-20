@@ -269,6 +269,7 @@ void SceneTitle::render()
 
 
 	// ƒJ[ƒ\ƒ‹‚É‡‚í‚¹‚Ä“®‚­‰æ‘œ‚Ì•`‰æˆ—
+
 	DrawRotaGraph(mgr->x, mgr->y, 0.2, 0, mgr->mouse_cursor, TRUE);
 
 	SetFontSize(100);

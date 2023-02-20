@@ -39,7 +39,7 @@ public:
 	int StaminaImage = 0;
 	int HpImage = 0;
 	int Tama = 0;
-	
+	int ModelHandle = 0;
 
 	int PlaySound1 = 0;
 
@@ -61,7 +61,8 @@ public:
 	bool shoot_flag = false;
 	
 
-
+	tnl::Vector3 pos_zombi;
+	tnl::Quaternion rot_zombi;
 
 
 };

@@ -6,6 +6,7 @@
 #include "../model/gm_anim_sprite3d.h"
 
 
+
 tnl::Quaternion	fix_rot;
 
 ScenePlay::ScenePlay()
@@ -22,7 +23,8 @@ ScenePlay::~ScenePlay() {
 }
 
 void ScenePlay::initialzie() {
-
+	weapon->Initialize();
+	ModelHandle = MV1LoadModel("zombietaro/zombie.pmx");
 	player->hp = 100;
 	//weapon->Initialize();
 
@@ -61,11 +63,11 @@ void ScenePlay::initialzie() {
 	}
 
 	//ƒh[ƒ€”wŒi‚Ì¶¬
-	Dome_ = dxe::Mesh::CreateSphere(3000);
+	Dome_ = dxe::Mesh::CreateSphereMV(3000);
 	Dome_->setTexture(dxe::Texture::CreateFromFile("graphics/yoru_Valo.jpg"));
 
 	//°‚Ì¶¬
-	Floor_ = dxe::Mesh::CreatePlane({ 6000,6000,0 });
+	Floor_ = dxe::Mesh::CreatePlaneMV({ 6000,6000,0 });
 	Floor_->setTexture(dxe::Texture::CreateFromFile("graphics/floor.jpg"));
 	Floor_->rot_q_ = tnl::Quaternion::RotationAxis({ 1, 0, 0 }, tnl::ToRadian(90));
 	Floor_->pos_ = { 0, -20, 0 };
@@ -205,8 +207,25 @@ void ScenePlay::update(float delta_time)
 
 void ScenePlay::render()
 {
-
+	
 	player->Render();
+	
+	DrawRotaGraph(28, 666, 0.040f, 0, HpImage, true);
+	DrawRotaGraph(28, 711, 0.17f, 0, StaminaImage, true);
+	MATRIX view, proj;
+	memcpy(view.m, player->GetCamera()->view_.m, sizeof(float) * 16);
+	memcpy(proj.m, player->GetCamera()->proj_.m, sizeof(float) * 16);
+	SetCameraViewMatrix(view);
+	SetupCamera_ProjectionMatrix(proj);
+	DxLib::VECTOR vp;
+	vp = VGet(pos_zombi.x, pos_zombi.y, pos_zombi.z);
+	//rot_(tnl::QuaternionŒ^)‚ğMATRIXŒ^‚É•ÏŠ·
+	MATRIX rot;
+	memcpy(rot.m, rot_zombi.getMatrix().m, sizeof(float) * 16);
+	MV1SetRotationMatrix(ModelHandle, rot);
+	MV1SetScale(ModelHandle, { 4.0f,4.0f,4.0f });
+	MV1SetPosition(ModelHandle, vp);
+	MV1DrawModel(ModelHandle);
 	//ƒJƒƒ‰‚Ö‚Ì•`‰æˆ—
 	obj_->render(player->GetCamera());
 	Floor_->render(player->GetCamera());
@@ -240,12 +259,12 @@ void ScenePlay::render()
 
 	
 
-
-
-
-	DrawRotaGraph(28, 666, 0.040f, 0, HpImage, true);
-	DrawRotaGraph(28, 711, 0.17f, 0, StaminaImage, true);
 	weapon->Render();
+
+
+	
+	
+	
 	
 
 }

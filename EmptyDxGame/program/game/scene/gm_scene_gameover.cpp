@@ -14,14 +14,15 @@ void SceneGameOver::initialzie() {
 	G_oImage = LoadGraph("graphics/gameover.jpg");
 	G_oRed = LoadGraph("graphics/Red.png");
 	G_oSE = LoadSoundMem("sound/");
-	
+	cursol_gameoverImage = LoadGraph("graphics/MouseTitle.png", true);
 	
 }
 
 void SceneGameOver::update(float delta_time)
 {
 	GameManager* mgr = GameManager::GetInstance();
-	
+	//カーソルの位置取得
+	GetMousePoint(&mgr->x, &mgr->y);
 
 
 
@@ -60,11 +61,14 @@ void SceneGameOver::update(float delta_time)
 
 void SceneGameOver::render()
 {
+	GameManager* mgr = GameManager::GetInstance();
 	SetFontSize(50);
-
+	
+	
 
 	DrawRotaGraph(500, 500, 2, 0, G_oRed, true);
 	DrawRotaGraph(500, 380, 1, 0, G_oImage, true);
 	DrawStringEx(m_x, m_y, color, "リトライ");
 	DrawStringEx(m_x1, m_y1, color1, "タイトルへ");
+	DrawRotaGraph(mgr->x, mgr->y, 0.2, 0, mgr->mouse_cursor, TRUE);
 }

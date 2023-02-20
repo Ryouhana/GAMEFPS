@@ -1,4 +1,5 @@
 #include "Player.h"
+
 using namespace std;
 
 Player::Player(tnl::Vector3 pos)
@@ -99,7 +100,9 @@ void Player::Update(float deltaTime)
 void Player::Render()
 {
 	mainCamera->update();
-	DrawGridGround(mainCamera, 50, 20);
+
+	
+	//DrawGridGround(mainCamera, 50, 20);
 
 }
 
@@ -111,6 +114,7 @@ tnl::Vector3 Player::GetPostion()
 GmCamera* Player::GetCamera()
 {
 	return mainCamera;
+	
 }
 
 void Player::Move(int i)

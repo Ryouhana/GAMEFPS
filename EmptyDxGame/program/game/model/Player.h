@@ -2,6 +2,7 @@
 #include "../../dxlib_ext/dxlib_ext.h"
 #include "../gm_camera.h"
 
+
 class Player
 {
 public:
@@ -20,6 +21,7 @@ public:
 	void Render();
 	tnl::Vector3 GetPostion();
 	GmCamera* GetCamera();
+	
 private:
 	dxe::Mesh* body = nullptr;
 

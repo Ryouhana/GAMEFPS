@@ -8,7 +8,7 @@ void SceneResult::initialzie() {
 	HelpImage = LoadGraph("graphics/help.jpg");
 
 	//3Dƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
-	//>>>>>ModelHandle = MV1LoadModel("zombietaro/zombie.pmx");
+	
 	
 	
 	// Ä¶ŠÔ‚Ì‰Šú‰»
@@ -101,7 +101,7 @@ void SceneResult::render()
 	
 
 	
-	//DrawFormatString(0, 0, GetColor(255, 255, 255), "x=%.1f y=%.1f z=%.1f", x, y, z);
+
 	
 	/*DrawRotaGraph(520, 410, 0.9, 0, HelpImage,true);
 	DrawStringEx(440, 50, -1, "‘€ì•û–@");*/
