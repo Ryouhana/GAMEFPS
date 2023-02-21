@@ -2,8 +2,9 @@
 #include "../../dxlib_ext/dxlib_ext.h"
 #include "../gm_camera.h"
 #include "Player.h"
+#include "../scene/gm_scene_base.h"
 
-
+class Base;
 class Weapon {
 public:
 	enum WeaponType {
@@ -71,8 +72,10 @@ public:
 	};
 	AssaultRifleStatus assault_status;
 
-	tnl::Quaternion rot_;
-	tnl::Vector3 pos_;
+	tnl::Quaternion handrot_;
+	tnl::Vector3 handpos_;
+	tnl::Quaternion assaultrot_;
+	tnl::Vector3 assaultpos_;
 
 	
 	//•Ší‚Ì‰æ‘œ
@@ -115,6 +118,7 @@ public:
 	bool SubMachineGunFlah = false;
 	bool AssaultRifleFlag = false;
 	bool GunReroad = false;
-private:
 	GmCamera* weapon = nullptr;
+private:
+	
 };

@@ -178,6 +178,9 @@
     <ClCompile Include="program\game\scene\gm_scene_tutorial.cpp">
       <Filter>program\game\scene</Filter>
     </ClCompile>
+    <ClCompile Include="program\game\model\Effect.cpp">
+      <Filter>program\game\model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\library\picojson.h">
@@ -305,6 +308,9 @@
     </ClInclude>
     <ClInclude Include="program\game\scene\gm_scene_tutorial.h">
       <Filter>program\game\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="program\game\model\Effect.h">
+      <Filter>program\game\model</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

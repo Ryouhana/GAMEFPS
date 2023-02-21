@@ -1,9 +1,13 @@
 #include "weapon.h"
 #include "../gm_manager.h"
 #include "../model/Player.h"
+#include "Effect.h"
+#include "DxLib.h"
+
 using namespace std;
 
 Weapon::Weapon() {
+	hand_status.HandGunModelHandle = MV1LoadModel("MEUPistol/MEUPistol.pmd");
 	hand_status.HandGunImage = LoadGraph("graphics/Handgun.png");
 	sub_status.SubMachineGunImage = LoadGraph("graphics/MP5.png");
 	assault_status.AssaultRifleImage = LoadGraph("graphics/XM177.png");
@@ -13,10 +17,11 @@ Weapon::Weapon() {
 	HandGun_Reroad = LoadSoundMem("sound/Gun_SE/HandgunReroad.mp3");
 	debug = LoadGraph("graphics/Ring.png");
 	weapon = new GmCamera;
+	
 }
 void Weapon::Initialize() {
-	hand_status.HandGunModelHandle = MV1LoadModel("MEUPistol/MEUPistol.pmd");
-	//各武器の所持弾薬とマガジン内の弾薬のステータスを仮の変数に一度だけ代入
+	
+	//ーーーーーーーー各武器の所持弾薬とマガジン内の弾薬のステータスを仮の変数に一度だけ代入ーーーーーーー
 	demo_assaultammoClip = assault_status.ammoClip;
 	demo_assaultammunition = assault_status.ammunition;
 	demo_subammoClip = sub_status.ammoClip;
@@ -29,8 +34,9 @@ void Weapon::Initialize() {
 }
 
 void Weapon::Update(float deltaTime) {
-	GameManager* mgr = GameManager::GetInstance();
 	
+	GameManager* mgr = GameManager::GetInstance();
+	/*SetLightEnable(FALSE);*/
 	int wheelMax = 3;
 	int wheelMin = 1;
 	if (!GunReroad) {
@@ -43,11 +49,7 @@ void Weapon::Update(float deltaTime) {
 	if (mousewheel < wheelMin) {
 		mousewheel = 3;
 	}
-	/*if (mousewheel == HandGun) {
-		HandGunFlag = true;
-		SwitchWeapon(HandGun);
-	}*/
-	/*else HandGunFlag = false;*/
+	//ーーーーーーーーサブマシンガンを持ってる時の処理ーーーーーーーーーー
 	if (mousewheel == SubMachineGun) {
 		if (!SubMachineGunFlah) {
 			reroadtime = sub_status.reroadtime;
@@ -59,14 +61,13 @@ void Weapon::Update(float deltaTime) {
 			ammoAvailable = sub_status.ammoAvailable;
 			SubMachineGunFlah = true;
 		}
-
-
 		SwitchWeapon(SubMachineGun);
 	}
 	else {
 		SubMachineGunFlah = false;
 		
 	}
+	//ーーーーーーーーーアサルトライフルを持ってる時の処理ーーーーーーーー
 	if (mousewheel == AssaultRifle) {
 		if (!AssaultRifleFlag) {
 			reroadtime = assault_status.reroadtime;
@@ -84,6 +85,7 @@ void Weapon::Update(float deltaTime) {
 	else {
 		AssaultRifleFlag = false;
 	}
+	//ーーーーーーーーハンドガンを持ってる時の処理ーーーーーーーーーーー
 	if (mousewheel == HandGun) {
 		if (!HandGunFlag ) {
 			
@@ -103,7 +105,7 @@ void Weapon::Update(float deltaTime) {
 		HandGunFlag = false;
 		
 	}
-
+	//ーーーーーーーーー武器のリロード処理ーーーーーーーーーー
 	if (tnl::Input::IsKeyDownTrigger(eKeys::KB_R)) {
 
 		amountNeed = maxAmmoClip - ammoClip;
@@ -116,6 +118,7 @@ void Weapon::Update(float deltaTime) {
 
 		}
 	}
+	//ーーーーーーーーーリロード中の演出ーーーーーーー
 	if (GunReroad) {
 		normalreroad_time += reroadtime;
 
@@ -148,7 +151,9 @@ void Weapon::Update(float deltaTime) {
 
 void Weapon::Render() {
 	weapon->update();
+
 	
+
 	SetFontSize(55);
 	//文字の描画
 	//if (HandGunFlag) {
@@ -162,64 +167,81 @@ void Weapon::Render() {
 	DrawStringEx(840, 600, -1, "%d", mousewheel);
 	
 	
-	if (tnl::Input::IsKeyDown(eKeys::KB_UP)) {
-		pos_.y -= 0.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_DOWN)) {
-		pos_.y += 0.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) {
-		pos_.x -= 0.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) {
-		pos_.x += 0.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_Q)) {
-		pos_.z -= 0.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_E)) {
-		pos_.z += 0.1f;
-	}
-	int x = 1, y = 1;
-	if (tnl::Input::IsKeyDown(eKeys::KB_Z)) {
-		
-		
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_X)) {
-		rot_ *= tnl::Quaternion::RotationAxis({ 0,1,0 },tnl::ToRadian(1));
-	}
+
 	MATRIX view, proj;
 	memcpy(view.m, weapon->view_.m, sizeof(float) * 16);
 	memcpy(proj.m, weapon->proj_.m, sizeof(float) * 16);
 	SetCameraViewMatrix(view);
 	SetupCamera_ProjectionMatrix(proj);
-	DxLib::VECTOR vp;
-	vp = VGet(pos_.x, pos_.y, pos_.z);
+
+	DxLib::VECTOR handvp;
+	handvp = VGet(handpos_.x, handpos_.y, handpos_.z);
 	//rot_(tnl::Quaternion型)をMATRIX型に変換
-	MATRIX rot;
-	memcpy(rot.m, rot_.getMatrix().m, sizeof(float) * 16);
+	MATRIX handrot;
+	memcpy(handrot.m, handrot_.getMatrix().m, sizeof(float) * 16);
+
+	DxLib::VECTOR assaultvp;
+	assaultvp = VGet(assaultpos_.x, assaultpos_.y, assaultpos_.z);
+	//rot_(tnl::Quaternion型)をMATRIX型に変換
+	MATRIX assaultrot;
+	memcpy(assaultrot.m, assaultrot_.getMatrix().m, sizeof(float) * 16);
 
 	
-	/*MV1SetRotationXYZ(assault_status.AssaultModelHandle, VGet(angleX, angleY, 0.0f));
+	MV1SetRotationMatrix(assault_status.AssaultModelHandle, assaultrot);
 	MV1SetScale(assault_status.AssaultModelHandle, { 1.0f,1.0f,1.0f });
-	MV1SetPosition(assault_status.AssaultModelHandle, VGet(x, y, z));*/
+	MV1SetPosition(assault_status.AssaultModelHandle, assaultvp);
 
-	MV1SetRotationMatrix(hand_status.HandGunModelHandle, rot);
+	MV1SetRotationMatrix(hand_status.HandGunModelHandle, handrot);
 	MV1SetScale(hand_status.HandGunModelHandle, { 1.0f,1.0f,1.0f });
-	MV1SetPosition(hand_status.HandGunModelHandle, vp);
+	MV1SetPosition(hand_status.HandGunModelHandle, handvp);
+
+
 	// ３Ｄモデルの描画
+	if (tnl::Input::IsKeyDown(eKeys::KB_UP)) {
+		assaultpos_.y -= 1.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_DOWN)) {
+		assaultpos_.y += 1.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) {
+		assaultpos_.x -= 1.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) {
+		assaultpos_.x += 1.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_Q)) {
+		assaultpos_.z -= 1.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_E)) {
+		assaultpos_.z +=1.1f;
+	}
+	int x = 1, y = 1;
+	if (tnl::Input::IsKeyDown(eKeys::KB_Z)) {
+		assaultrot_ *= tnl::Quaternion::RotationAxis({ 1,0,0 }, tnl::ToRadian(1));
+
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_X)) {
+		assaultrot_ *= tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(1));
+	}
 	
-	//MV1DrawModel(assault_status.AssaultModelHandle);
 	
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "x=%.1f y=%.1f z=%.1f", pos_.x, pos_.y, pos_.z);
-	DrawFormatString(0, 200, GetColor(255, 255, 255), "x=%.1f y=%.1f", rot_.x, rot_.y);
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "x=%.1f y=%.1f z=%.1f", assaultpos_.x, assaultpos_.y, assaultpos_.z);
+	DrawFormatString(0, 200, GetColor(255, 255, 255), "x=%.1f y=%.1f", assaultrot_.x, assaultrot_.y);
 	
 }
 
+//ーーーーーーーーー武器を切り替えた後のそれぞれの処理を実行する関数ーーーーーーーーーーー
 void Weapon::SwitchWeapon(WeaponType weapontype) {
+	Effect effect;
+	effect.Update();
 	GameManager* mgr = GameManager::GetInstance();
 	switch (weapontype) {
 	case WeaponType::AssaultRifle:
+		if (!GunReroad) {
+			MV1DrawModel(assault_status.AssaultModelHandle);
+		}
+		assaultrot_ = tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(180));
+		assaultpos_.x = 1.1f, assaultpos_.y = -2.2f, assaultpos_.z = -97.9f;
 		NormalWeaponImage = assault_status.AssaultRifleImage;
 		NormalWeapon_Reroad = assault_status.AssaultRifle_Reroad;
 		reroad_x = assault_status.reroad_x;
@@ -233,7 +255,7 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 
 			if (ammoClip > 0) {
 				PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);
-
+			
 				ammoClip--;
 				if (mousewheel == AssaultRifle) {
 					demo_assaultammoClip = ammoClip;
@@ -251,8 +273,8 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 		if (!GunReroad) {
 			MV1DrawModel(hand_status.HandGunModelHandle);
 		}
-		rot_ = tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(180));
-		pos_.x = 1.2f, pos_.y = -1.2f, pos_.z = -96.6f;
+		handrot_ = tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(180));
+		handpos_.x = 1.2f, handpos_.y = -1.2f, handpos_.z = -96.6f;
 		NormalWeaponImage = hand_status.HandGunImage;
 		NormalWeapon_Reroad = hand_status.HandGun_Reroad;
 		reroad_x = hand_status.reroad_x;
@@ -314,12 +336,3 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 
 	 }
 }
-//武器の描画ができてから
-//void Weapon::Render(Player *p, int weapon, int type) {
-//	auto prevWeapon = 0;
-//	weapon = p->HaveWeapon[0];
-//	type = HandGun;
-//	/*if (tnl::Input::GetMouseWheel) {
-//		prevWeapon = weapon;
-//	}*/
-//}

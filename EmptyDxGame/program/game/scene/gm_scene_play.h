@@ -3,6 +3,8 @@
 #include "../model/weapon.h"
 #include "../model/Zombie.h"
 #include "../model/gm_model.h"
+#include "../gm_camera.h"
+
 
 class GmCamera;
 class AnimSprite3D;
@@ -17,6 +19,10 @@ public:
 	void initialzie() override;
 	void update(float delta_time) override;
 	void render() override;
+	AnimSprite3D* zombi_[500] = {};
+	Zombie* zombie = nullptr;
+	Player* player = nullptr;
+	Weapon* weapon = nullptr;
 
 	Model* obj_ = nullptr;
 	Model* obj_1 = nullptr;
@@ -28,10 +34,7 @@ public:
 	dxe::Mesh* Enemy_ = nullptr;
 	int Popcap = 10;
 	float obb_x = 20, obb_y = 30;
-	AnimSprite3D* zombi_[500] = {};
-	Zombie* zombie = nullptr;
-	Player* player = nullptr;
-	Weapon* weapon = nullptr;
+	
 
 
 	int box_parts = 0;
@@ -39,7 +42,7 @@ public:
 	int StaminaImage = 0;
 	int HpImage = 0;
 	int Tama = 0;
-	int ModelHandle = 0;
+
 
 	int PlaySound1 = 0;
 
@@ -61,8 +64,7 @@ public:
 	bool shoot_flag = false;
 	
 
-	tnl::Vector3 pos_zombi;
-	tnl::Quaternion rot_zombi;
+
 
 
 };

@@ -4,25 +4,30 @@ using namespace std;
 
 Player::Player(tnl::Vector3 pos)
 {
-	
+	//ーーーーーーーーーゲームカメラを実行ーーーーーーーー
 	mainCamera = new GmCamera();
 	mainCamera->ctrl = GmCamera::CTRL_TYPE_QTN;
 	mainCamera->pos_ = pos;//{ 100, 60, 0 };
 	body = dxe::Mesh::CreateSphereMV(30);
 	Walk_SE = LoadSoundMem("sound/Walk_SE.mp3");
 	Run_SE = LoadSoundMem("sound/Run_SE.mp3");
+	Tired_SE = LoadSoundMem("sound/ikigire.mp3");
+	ChangeVolumeSoundMem(120,Walk_SE);
+	ChangeVolumeSoundMem(130, Run_SE);
+	ChangeVolumeSoundMem(100, Tired_SE);
+	staminaMax = stamina;
 	
 }
 
 void Player::Initialize(tnl::Vector3 pos)
 {
-	mainCamera = new GmCamera();
-	mainCamera->ctrl = GmCamera::CTRL_TYPE_QTN;
-	mainCamera->pos_ = pos;//{ 100, 60, 0 };
-	/*Walk_SE = LoadSoundMem("sound/Walk_SE.mp3");
-	Run_SE = LoadSoundMem("sound/Run_SE.mp3");*/
-	body = dxe::Mesh::CreateSphereMV(30);
-	
+	//mainCamera = new GmCamera();
+	//mainCamera->ctrl = GmCamera::CTRL_TYPE_QTN;
+	//mainCamera->pos_ = pos;//{ 100, 60, 0 };
+	///*Walk_SE = LoadSoundMem("sound/Walk_SE.mp3");
+	//Run_SE = LoadSoundMem("sound/Run_SE.mp3");*/
+	//body = dxe::Mesh::CreateSphereMV(30);
+	//
 
 }
 
@@ -30,13 +35,15 @@ float timer = 0;
 tnl::Vector3 msv = { DXE_WINDOW_WIDTH / 2, DXE_WINDOW_HEIGHT / 2, 0 };
 void Player::Update(float deltaTime)
 {
-
+	//ーーーーーーーーーマウスでカメラのアングルを動かす処理の関数を実行ーーーーーーーーーー
 	CameraAngle();
 
-	// プレイヤーのダッシュ処理
+	// ーーーーーーープレイヤーのダッシュ処理ーーーーーーーーーーーー
 	if (tnl::Input::IsKeyDown(eKeys::KB_LSHIFT) && tnl::Input::IsKeyDown(eKeys::KB_W)) {
 		if (hp != 0) {
-			if (stamina > 0.f) {
+			
+			StopSoundMem(Tired_SE);
+			if (stamina > 0.f && !reroadflag) {
 				dushFlag = true;
 
 			}
@@ -51,12 +58,11 @@ void Player::Update(float deltaTime)
 	if (stamina <= 0.f) {
 
 		dushFlag = false;
-
+	
+		PlaySoundMem(Tired_SE, DX_PLAYTYPE_LOOP, 0);
 	}
-	if (!dushFlag) {
-		RecoveryStamina(deltaTime);
-	}
-	// プレイヤーの移動処理関数（HPが0になったら実行されない）
+	
+	// ーーーーーーーーーープレイヤーの移動処理関数（HPが0になったら実行されない）ーーーーーーーーーー
 	if (hp > 0) {
 		Move(0);
 	}
@@ -65,24 +71,29 @@ void Player::Update(float deltaTime)
 		dushFlag = false;
 	}
 
-	//歩いてる時の足音
+	//ーーーーーーーー歩いてる時の足音ーーーーーー
 	if (walkFlag) {
 		PlaySoundMem(Walk_SE, DX_PLAYTYPE_LOOP, 0);
 	}
-	//歩いてる音を止める
+	//ーーーーーーーー歩いてる音を止めるーーーーー
 	if (!walkFlag || dushFlag) {
 		StopSoundMem(Walk_SE);
 	}
-	//走ってる時の足音
+	//ーーーーーーーー走ってる時の足音ーーーーーー
 	if (dushFlag) {
 		PlaySoundMem(Run_SE, DX_PLAYTYPE_LOOP, 0);
 	}
-	//走ってる音を止める
+	//ーーーーーー走ってる音を止めるーーーーーーー
 	if (!dushFlag) {
 		StopSoundMem(Run_SE);
+		
+			RecoveryStamina(deltaTime);
+		
+		
+		
 	}
 
-	// プレイヤーのジャンプ処理
+	//ーーーーープレイヤーのジャンプ処理ーーーーー
 	if (tnl::Input::IsKeyDownTrigger(eKeys::KB_SPACE)) {
 		jumpFlag = true;
 	}
@@ -100,7 +111,7 @@ void Player::Update(float deltaTime)
 void Player::Render()
 {
 	mainCamera->update();
-
+	
 	
 	//DrawGridGround(mainCamera, 50, 20);
 
@@ -116,7 +127,7 @@ GmCamera* Player::GetCamera()
 	return mainCamera;
 	
 }
-
+//ーーーーーーーーーカメラの位置を動かす処理（プレイヤーの移動）ーーーーーー
 void Player::Move(int i)
 {
 
@@ -125,16 +136,19 @@ void Player::Move(int i)
 		moveDirection[2] = mainCamera->back().xz();
 		moveDirection[3] = mainCamera->left().xz();
 	
+	
 
+	
 	tnl::Vector3 move_direction;
 	tnl::Input::RunIndexKeyDown([&](uint32_t idx) {
 		move_direction += moveDirection[idx];
-
+	
 
 		}, eKeys::KB_W, eKeys::KB_D, eKeys::KB_S, eKeys::KB_A);
 
 	move_direction.normalize();
 
+	
 	if (tnl::Input::IsKeyDown(eKeys::KB_W, eKeys::KB_A, eKeys::KB_S, eKeys::KB_D)) {
 		walkFlag = true;
 
@@ -148,6 +162,7 @@ void Player::Move(int i)
 	if (dushFlag) {
 		timer = 0.f;
 		Dush(i);
+		
 	}
 
 	else mainCamera->pos_ += move_direction * walkSpeed;
@@ -168,6 +183,8 @@ void Player::Dush(int i)
 	mainCamera->pos_ += moveDirection[i] * dushSpeed;
 	stamina -= 0.5f;
 	stamina = max(stamina, 0.f);
+
+	 
 }
 
 void Player::Jump()
@@ -177,13 +194,19 @@ void Player::Jump()
 
 void Player::RecoveryStamina(float deltaTime)
 {
+	
 	timer += deltaTime;
 	if (timer > dushRecoveryTime) {
 		stamina += 1;
 		stamina = min(stamina, staminaMax);
+		if (stamina == staminaMax) {
+			StopSoundMem(Tired_SE);
+	}
+		
+		
 	}
 }
-
+//カメラのアングルを動かす処理の関数
 void Player::CameraAngle()
 {
 	tnl::Vector3 mv = tnl::Input::GetMouseVelocity();

@@ -12,7 +12,7 @@ void GmCamera::update()
 	//ーーーーー一人称視点でのカメラの処理ーーーーーーーー
 	else if (CTRL_TYPE_QTN == ctrl) {
 		target_ = pos_ + tnl::Vector3::TransformCoord({ 0, 0, 1 }, c_rot);
-
+		
 	}
 
 	dxe::Camera::update();

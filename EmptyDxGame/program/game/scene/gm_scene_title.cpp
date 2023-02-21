@@ -173,7 +173,7 @@ void SceneTitle::initialzie() {
 
 
 
-
+	//ーーーーーータイトル画面のゲームカメラを実行ーーーーーー
 	camera_ = new GmCamera();
 	camera_->ctrl = GmCamera::CTRL_TYPE_FREE_LOOK;
 	camera_->pos_ = { 0, 0, -300 };
@@ -194,7 +194,7 @@ void SceneTitle::update(float delta_time)
 {
 	GameManager* mgr = GameManager::GetInstance();
 
-	// BGMの再生
+	// ーーーーーーーBGMの再生ーーーーーーーーー
 	if (!music) {
 		mgr->TitleMusic = LoadSoundMem("sound/desperate.mp3");
 		PlaySoundMem(mgr->TitleMusic, DX_PLAYTYPE_NORMAL + DX_PLAYTYPE_LOOP);
@@ -237,7 +237,7 @@ void SceneTitle::update(float delta_time)
 void SceneTitle::render()
 {
 
-	//ダウンロードしたフォントの読み込み
+	//ーーーーーーダウンロードしたフォントの読み込みーーーーーーーー
 	LPCSTR font_path = "./ankokuzonji/Zomzi.TTF";
 
 	if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) > 0) {

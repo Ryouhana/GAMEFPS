@@ -6,10 +6,10 @@
 void SceneResult::initialzie() {
 	
 	HelpImage = LoadGraph("graphics/help.jpg");
-
+	ModelHandle = MV1LoadModel("zombietaro/zombie.pmx");
 	//3Dƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
 	
-	
+	testModel = MV1LoadModel("MEUPistol/MEUPistol.pmd");
 	
 	// Ä¶ŠÔ‚Ì‰Šú‰»
 	PlayTime = 0.0f;
@@ -47,31 +47,31 @@ void SceneResult::update(float delta_time)
 
 
 
-	//if (tnl::Input::IsKeyDown(eKeys::KB_W)) {
-	//	pos_.y -= 0.1f;
-	//}
-	//else if (tnl::Input::IsKeyDown(eKeys::KB_S)) {
-	//	pos_.y += 0.1f;
-	//}
-	//else if (tnl::Input::IsKeyDown(eKeys::KB_A)) {
-	//	pos_.x -= 0.1f;
-	//}
-	//else if (tnl::Input::IsKeyDown(eKeys::KB_D)) {
-	//	pos_.x += 0.1f;
-	//}
-	//else if (tnl::Input::IsKeyDown(eKeys::KB_Q)) {
-	//	pos_.z -= 0.1f;
-	//}
-	//else if (tnl::Input::IsKeyDown(eKeys::KB_E)) {
-	//	pos_.z += 0.1f;
-	//}
+	if (tnl::Input::IsKeyDown(eKeys::KB_W)) {
+		testpos_.y -= 0.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_S)) {
+		testpos_.y += 0.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_A)) {
+		testpos_.x -= 0.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_D)) {
+		testpos_.x += 0.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_Q)) {
+		testpos_.z -= 0.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_E)) {
+		testpos_.z += 0.1f;
+	}
 
-	//if (tnl::Input::IsKeyDown(eKeys::KB_Z)) {
-	//	rot_ *= tnl::Quaternion::RotationAxis({ 1,0,0 }, tnl::ToRadian(5));
-	//}
-	//else if (tnl::Input::IsKeyDown(eKeys::KB_X)) {
-	//	rot_ *= tnl::Quaternion::RotationAxis({ 0,1,0 },tnl::ToRadian(5));
-	//}
+	if (tnl::Input::IsKeyDown(eKeys::KB_Z)) {
+		testrot_ *= tnl::Quaternion::RotationAxis({ 1,0,0 }, tnl::ToRadian(5));
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_X)) {
+		testrot_ *= tnl::Quaternion::RotationAxis({ 0,1,0 },tnl::ToRadian(5));
+	}
 
 	// Ä¶ŠÔ‚ği‚ß‚é
 	PlayTime += 1;
@@ -96,6 +96,38 @@ void SceneResult::render()
 
 	result_Camera->update();
 	
+	MATRIX view, proj;
+	memcpy(view.m, result_Camera->view_.m, sizeof(float) * 16);
+	memcpy(proj.m, result_Camera->proj_.m, sizeof(float) * 16);
+	SetCameraViewMatrix(view);
+	SetupCamera_ProjectionMatrix(proj);
+	DxLib::VECTOR vp;
+	vp = VGet(testpos_.x, testpos_.y, testpos_.z);
+	//rot_(tnl::QuaternionŒ^)‚ğMATRIXŒ^‚É•ÏŠ·
+	MATRIX rot;
+	memcpy(rot.m, testrot_.getMatrix().m, sizeof(float) * 16);
+	MV1SetRotationMatrix(testModel, rot);
+	MV1SetScale(testModel, { 1.0f,1.0f,1.0f });
+	MV1SetPosition(testModel, vp);
+	DxLib::VECTOR vpzombi;
+	vpzombi = VGet(pos_zombi.x, pos_zombi.y, pos_zombi.z);
+	//rot_(tnl::QuaternionŒ^)‚ğMATRIXŒ^‚É•ÏŠ·
+	MATRIX rotzombi;
+	memcpy(rotzombi.m, rot_zombi.getMatrix().m, sizeof(float) * 16);
+	MV1SetRotationMatrix(ModelHandle, rotzombi);
+	MV1SetScale(ModelHandle, { 4.0f,4.0f,4.0f });
+	MV1SetPosition(ModelHandle, vpzombi);
+	MV1DrawModel(testModel);
+	
+	MV1DrawModel(ModelHandle);
+	MV1GetDifColorScale(testModel);
+	MV1GetSpcColorScale(testModel);
+	MV1GetEmiColorScale(testModel);
+	MV1GetAmbColorScale(testModel);
+	DrawStringEx(100, 100, -1, "%f %f %f %f", MV1GetDifColorScale(testModel).r, MV1GetDifColorScale(testModel).g, MV1GetDifColorScale(testModel).b, MV1GetDifColorScale(testModel).a);
+	DrawStringEx(100, 200, -1, "%f %f %f %f", MV1GetSpcColorScale(testModel).r, MV1GetSpcColorScale(testModel).g, MV1GetSpcColorScale(testModel).b, MV1GetSpcColorScale(testModel).a);
+	DrawStringEx(100, 300, -1, "%f %f %f %f", MV1GetEmiColorScale(testModel).r, MV1GetEmiColorScale(testModel).g, MV1GetEmiColorScale(testModel).b, MV1GetEmiColorScale(testModel).a);
+	DrawStringEx(100, 400, -1, "%f %f %f %f", MV1GetAmbColorScale(testModel).r, MV1GetAmbColorScale(testModel).g, MV1GetAmbColorScale(testModel).b, MV1GetAmbColorScale(testModel).a);
 
 	/*ModelHandle->render(result_Camera);*/
 	

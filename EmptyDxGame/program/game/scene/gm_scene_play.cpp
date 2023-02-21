@@ -1,5 +1,4 @@
 #include "../gm_manager.h"
-#include "../gm_camera.h"
 #include "gm_scene_play.h"
 #include "gm_scene_result.h"
 #include "gm_scene_gameover.h"
@@ -14,7 +13,9 @@ ScenePlay::ScenePlay()
 	player = new Player({ 100, 60, 0 });
 	weapon = new Weapon();
 	zombie = new Zombie();
+	
 	//zombie->Initialize();
+	
 }
 
 ScenePlay::~ScenePlay() {
@@ -23,12 +24,14 @@ ScenePlay::~ScenePlay() {
 }
 
 void ScenePlay::initialzie() {
+	
 	weapon->Initialize();
-	ModelHandle = MV1LoadModel("zombietaro/zombie.pmx");
+	
+
 	player->hp = 100;
 	//weapon->Initialize();
 
-	//BGM再生処理
+	//ーーーーーーBGM再生処理ーーーーーー
 	//PlaySound1 = LoadSoundMem("sound/escape.mp3");
 	PlaySoundMem(PlaySound1, DX_PLAYTYPE_LOOP + DX_PLAYTYPE_BACK);
 	
@@ -62,17 +65,17 @@ void ScenePlay::initialzie() {
 
 	}
 
-	//ドーム背景の生成
-	Dome_ = dxe::Mesh::CreateSphereMV(3000);
+	//ーーーーードーム背景の生成ーーーーーーー
+	Dome_ = dxe::Mesh::CreateSphere(3000);
 	Dome_->setTexture(dxe::Texture::CreateFromFile("graphics/yoru_Valo.jpg"));
-
-	//床の生成
-	Floor_ = dxe::Mesh::CreatePlaneMV({ 6000,6000,0 });
+	Dome_->scl_ = { 0.4f,0.4f,0.4f };
+	//ーーーーーーー床の生成ーーーーーーーー
+	Floor_ = dxe::Mesh::CreatePlane({ 6000,6000,0 });
 	Floor_->setTexture(dxe::Texture::CreateFromFile("graphics/floor.jpg"));
 	Floor_->rot_q_ = tnl::Quaternion::RotationAxis({ 1, 0, 0 }, tnl::ToRadian(90));
 	Floor_->pos_ = { 0, -20, 0 };
 
-	//木のオブジェクト生成
+	//ーーーーーー木のオブジェクト生成ーーーーー
 	obj_ = new Model();
 	obj_->pos_ = { 0, 0, 500 };
 	std::vector<dxe::Mesh*> meshs = dxe::Mesh::CreateFromFileObj("mesh/obj/Tree/Tree.obj");
@@ -88,18 +91,20 @@ void ScenePlay::initialzie() {
 	Player_->pos_ = { 130, 28, 130 };
 
 	stamina = 100;*/
-
+	
 
 }
 
 void ScenePlay::update(float delta_time)
 {
-	SetMouseDispFlag(FALSE);// カーソルの非表示
-	GameManager* mgr = GameManager::GetInstance();
-
+	
 	player->Update(delta_time);
 	weapon->Update(delta_time);
 	zombie->Update(delta_time);
+	SetMouseDispFlag(FALSE);// カーソルの非表示
+	GameManager* mgr = GameManager::GetInstance();
+
+
 	tnl::Vector3 hit;
 
 	hitPlayerFlag = false;
@@ -154,7 +159,7 @@ void ScenePlay::update(float delta_time)
 			PlaySoundMem(mgr->ZombieSound, DX_PLAYTYPE_BACK);
 			go_guns = true;
 		}
-		//HPが0になってから数秒後にシーン移行またカメラの演出
+		//ーーーーーーHPが0になってから数秒後にシーン移行またカメラの演出ーーーーーーー
 		g_oTime += delta_time;
 		player->GetCamera()->c_rot.x -= 0.001f;
 		if (g_oTime > 3) {
@@ -171,10 +176,17 @@ void ScenePlay::update(float delta_time)
 
 	}*/
 
-	//プレイヤーと敵が接触した時のhp減少フラグ
+	//ーーーーーーープレイヤーと敵が接触した時のhp減少フラグーーーーーーーーー
 	if (hitPlayerFlag) {
 		player->hp -= 2;
 	}
+
+	//ーーーーーーーーーリロードしてる最中は走れないようにする処理ーーーーーーー
+	if (weapon->GunReroad) {
+		player->reroadflag = true;
+		player->dushFlag = false;
+	}
+	else player->reroadflag = false;
 	/*if (shoot_flag) {
 		if (tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
 			player->hp -= 10;
@@ -200,37 +212,24 @@ void ScenePlay::update(float delta_time)
 		mgr->chengeScene(new SceneResult());
 		
 	}
-
+	
 
 
 }
 
 void ScenePlay::render()
 {
-	
+
+
 	player->Render();
 	
-	DrawRotaGraph(28, 666, 0.040f, 0, HpImage, true);
-	DrawRotaGraph(28, 711, 0.17f, 0, StaminaImage, true);
-	MATRIX view, proj;
-	memcpy(view.m, player->GetCamera()->view_.m, sizeof(float) * 16);
-	memcpy(proj.m, player->GetCamera()->proj_.m, sizeof(float) * 16);
-	SetCameraViewMatrix(view);
-	SetupCamera_ProjectionMatrix(proj);
-	DxLib::VECTOR vp;
-	vp = VGet(pos_zombi.x, pos_zombi.y, pos_zombi.z);
-	//rot_(tnl::Quaternion型)をMATRIX型に変換
-	MATRIX rot;
-	memcpy(rot.m, rot_zombi.getMatrix().m, sizeof(float) * 16);
-	MV1SetRotationMatrix(ModelHandle, rot);
-	MV1SetScale(ModelHandle, { 4.0f,4.0f,4.0f });
-	MV1SetPosition(ModelHandle, vp);
-	MV1DrawModel(ModelHandle);
+
+
 	//カメラへの描画処理
 	obj_->render(player->GetCamera());
 	Floor_->render(player->GetCamera());
 	Dome_->render(player->GetCamera());
-
+	
 
 	SetFontSize(20); //文字の大きさを変更
 	zombie->Render();
@@ -257,9 +256,10 @@ void ScenePlay::render()
 	DrawBox(60, 700, 60 + 200, 700 + 20, STcolor, FALSE);		//枠を描画
 	DrawBox(60, 700, 60 + 200 * player->stamina / player->staminaMax, 700 + 20, STcolor, TRUE);	//HPゲージを描画
 
-	
-
+	DrawRotaGraph(28, 666, 0.040f, 0, HpImage, true);
+	DrawRotaGraph(28, 711, 0.17f, 0, StaminaImage, true);
 	weapon->Render();
+	
 
 
 	

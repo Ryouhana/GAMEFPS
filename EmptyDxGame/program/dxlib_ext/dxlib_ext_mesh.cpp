@@ -200,7 +200,7 @@ namespace dxe {
 		SetCameraViewMatrix(view);
 		SetupCamera_ProjectionMatrix(proj);
 
-		SetLightEnable(render_param_.is_default_light_enable_);
+		//SetLightEnable(render_param_.is_default_light_enable_);
 
 		// ’¸“_‚ÌË‰e•ÏŠ·—ps—ñ
 		tnl::Matrix mt_vertex;

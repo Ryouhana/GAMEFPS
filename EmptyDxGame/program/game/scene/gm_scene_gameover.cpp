@@ -10,7 +10,7 @@
 
 
 void SceneGameOver::initialzie() {
-	//画像の読み込み
+	//ーーーーーーー画像の読み込みーーーーーーーーー
 	G_oImage = LoadGraph("graphics/gameover.jpg");
 	G_oRed = LoadGraph("graphics/Red.png");
 	G_oSE = LoadSoundMem("sound/");
@@ -21,7 +21,7 @@ void SceneGameOver::initialzie() {
 void SceneGameOver::update(float delta_time)
 {
 	GameManager* mgr = GameManager::GetInstance();
-	//カーソルの位置取得
+	//ーーーーーーーーカーソルの位置取得ーーーーーーーー
 	GetMousePoint(&mgr->x, &mgr->y);
 
 

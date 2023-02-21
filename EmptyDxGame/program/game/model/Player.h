@@ -1,18 +1,21 @@
 #pragma once
 #include "../../dxlib_ext/dxlib_ext.h"
 #include "../gm_camera.h"
+#include "../model/weapon.h"
 
 
 class Player
 {
 public:
 	const int hpMax = 100;
-	const int staminaMax = 100;
+
 
 	int hp = 100;
-	int stamina = 100;
+	int stamina = 100, staminaMax = 0;
 	int Walk_SE = 0, Run_SE = 0;
+	int Tired_SE = 0;
 	int HaveWeapon[2] = { 0 };
+	
 
 	Player(tnl::Vector3 pos);
 	~Player() {};
@@ -21,7 +24,12 @@ public:
 	void Render();
 	tnl::Vector3 GetPostion();
 	GmCamera* GetCamera();
-	
+
+	bool dushFlag = false;
+	bool jumpFlag = false;
+	bool walkFlag = false;
+
+	bool reroadflag = false;
 private:
 	dxe::Mesh* body = nullptr;
 
@@ -31,9 +39,7 @@ private:
 	float walkSpeed = 3;
 	float dushSpeed = 5;
 
-	bool dushFlag = false;
-	bool jumpFlag = false;
-	bool walkFlag = false;
+
 
 	GmCamera* mainCamera = nullptr;
 	tnl::Vector3 moveVelocity;
