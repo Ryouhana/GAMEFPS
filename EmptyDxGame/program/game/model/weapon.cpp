@@ -16,6 +16,12 @@ Weapon::Weapon() {
 	Tama_0 = LoadSoundMem("sound/Gun_SE/no.mp3");
 	HandGun_Reroad = LoadSoundMem("sound/Gun_SE/HandgunReroad.mp3");
 	debug = LoadGraph("graphics/Ring.png");
+
+	//撃った際の火花の画像
+	BangHandle = dxe::Mesh::CreatePlane({ 50, 50, 0 });
+	BangHandle ->setTexture(dxe::Texture::CreateFromFile("graphics/bang.png"));
+//	BangHandle ->rot_q_ = tnl::Quaternion::RotationAxis({ 0, 0, 0 }, tnl::ToRadian(90));
+	
 	weapon = new GmCamera;
 	
 }
@@ -143,7 +149,40 @@ void Weapon::Update(float deltaTime) {
 		}
 
 	}
+	// ３Ｄモデルの描画
+	if (tnl::Input::IsKeyDown(eKeys::KB_UP)) {
+		BangHandle->pos_.y -= 1.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_DOWN)) {
+		BangHandle->pos_.y += 1.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) {
+		BangHandle->pos_.x -= 1.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) {
+		BangHandle->pos_.x += 1.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_Q)) {
+		BangHandle->pos_.z -= 1.1f;
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_E)) {
+		BangHandle->pos_.z += 1.1f;
+	}
 	
+	if (tnl::Input::IsKeyDown(eKeys::KB_Z)) {
+		bang_scaley += 1.0f;
+
+	}
+	else if (tnl::Input::IsKeyDown(eKeys::KB_X)) {
+		bang_scalex += 1.0f;
+	}
+
+	if (BangHandle->scl_.x >= 100.f) {
+		BangHandle->scl_.x = 0;
+	}
+	if (BangHandle->scl_.y >= 100.f) {
+		BangHandle->scl_.y = 0;
+	}
 
 		
 		
@@ -185,8 +224,11 @@ void Weapon::Render() {
 	//rot_(tnl::Quaternion型)をMATRIX型に変換
 	MATRIX assaultrot;
 	memcpy(assaultrot.m, assaultrot_.getMatrix().m, sizeof(float) * 16);
+	for (int i = 0; i < 100; i++) {
+		MV1SetMaterialOutLineWidth(assault_status.AssaultModelHandle, i, 0);
+		MV1SetMaterialOutLineWidth(hand_status.HandGunModelHandle, i, 0);
+	}
 
-	
 	MV1SetRotationMatrix(assault_status.AssaultModelHandle, assaultrot);
 	MV1SetScale(assault_status.AssaultModelHandle, { 1.0f,1.0f,1.0f });
 	MV1SetPosition(assault_status.AssaultModelHandle, assaultvp);
@@ -195,51 +237,34 @@ void Weapon::Render() {
 	MV1SetScale(hand_status.HandGunModelHandle, { 1.0f,1.0f,1.0f });
 	MV1SetPosition(hand_status.HandGunModelHandle, handvp);
 
-
-	// ３Ｄモデルの描画
-	if (tnl::Input::IsKeyDown(eKeys::KB_UP)) {
-		assaultpos_.y -= 1.1f;
+	
+	if (mousewheel == AssaultRifle) {
+		if (!GunReroad && shoottime == 0 && ammoClip > 0) {
+			BangHandle->render(weapon);
+		}
 	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_DOWN)) {
-		assaultpos_.y += 1.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) {
-		assaultpos_.x -= 1.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) {
-		assaultpos_.x += 1.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_Q)) {
-		assaultpos_.z -= 1.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_E)) {
-		assaultpos_.z +=1.1f;
-	}
-	int x = 1, y = 1;
-	if (tnl::Input::IsKeyDown(eKeys::KB_Z)) {
-		assaultrot_ *= tnl::Quaternion::RotationAxis({ 1,0,0 }, tnl::ToRadian(1));
-
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_X)) {
-		assaultrot_ *= tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(1));
+	if (mousewheel == HandGun) {
+		if (!GunReroad && shoottime == 0 && ammoClip > 0) {
+			BangHandle->render(weapon);
+		}
 	}
 	
 	
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "x=%.1f y=%.1f z=%.1f", assaultpos_.x, assaultpos_.y, assaultpos_.z);
-	DrawFormatString(0, 200, GetColor(255, 255, 255), "x=%.1f y=%.1f", assaultrot_.x, assaultrot_.y);
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "x=%.1f y=%.1f z=%.1f", BangHandle->pos_.x, BangHandle->pos_.y, BangHandle->pos_.z);
+	DrawFormatString(0, 200, GetColor(255, 255, 255), "x=%.1f y=%.1f", bang_scalex, bang_scaley);
 	
 }
 
 //ーーーーーーーーー武器を切り替えた後のそれぞれの処理を実行する関数ーーーーーーーーーーー
 void Weapon::SwitchWeapon(WeaponType weapontype) {
-	Effect effect;
-	effect.Update();
+
 	GameManager* mgr = GameManager::GetInstance();
 	switch (weapontype) {
 	case WeaponType::AssaultRifle:
 		if (!GunReroad) {
 			MV1DrawModel(assault_status.AssaultModelHandle);
 		}
+		BangHandle->pos_ = { bang_x, bang_y, bang_z };
 		assaultrot_ = tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(180));
 		assaultpos_.x = 1.1f, assaultpos_.y = -2.2f, assaultpos_.z = -97.9f;
 		NormalWeaponImage = assault_status.AssaultRifleImage;
@@ -250,7 +275,11 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 		weapon_x = assault_status.weapon_x;
 		weapon_y = assault_status.weapon_y;
 		weapon_scale = assault_status.weapon_scale;
+		bang_x = assault_status.bang_x;
+		bang_y = assault_status.bang_y;
+		bang_z = assault_status.bang_z;
 		shoottime++;
+		
 		if (tnl::Input::IsMouseDown(tnl::Input::eMouse::LEFT) && !GunReroad && shoottime >= assault_status.shoottime) {
 
 			if (ammoClip > 0) {
@@ -265,14 +294,17 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 			if (ammoClip <= 0) {
 				ammoClip = 0;
 				PlaySoundMem(Tama_0, DX_PLAYTYPE_BACK);
+				
 			}
 			shoottime = 0;
 		}
 		break;
 	case WeaponType::HandGun:
+		
 		if (!GunReroad) {
 			MV1DrawModel(hand_status.HandGunModelHandle);
 		}
+		BangHandle->pos_ = { bang_x, bang_y, bang_z };
 		handrot_ = tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(180));
 		handpos_.x = 1.2f, handpos_.y = -1.2f, handpos_.z = -96.6f;
 		NormalWeaponImage = hand_status.HandGunImage;
@@ -283,10 +315,13 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 		weapon_x = hand_status.weapon_x;
 		weapon_y = hand_status.weapon_y;
 		weapon_scale = hand_status.weapon_scale;
+		bang_x = hand_status.bang_x;
+		bang_y = hand_status.bang_y;
+		bang_z = hand_status.bang_z;
 		shoottime++;
 		if (tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT) && !GunReroad && shoottime >= hand_status.shoottime) {
 			
-			if (ammoClip > 0) {
+			if (ammoClip > 0 && ammoClip != 0) {
 				PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);
 
 				ammoClip--;
@@ -294,15 +329,21 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 					demo_handammoClip = ammoClip;
 				}
 			}
-
 			if (ammoClip <= 0) {
-				ammoClip = 0;
+				
+					
 				PlaySoundMem(Tama_0, DX_PLAYTYPE_BACK);
+				ammoClip = 0;
+				
+
 			}
+			
+			
 			shoottime = 0;
 		}
 		break;
 	case WeaponType::SubMachineGun:
+		BangHandle->pos_ = { bang_x, bang_y, bang_z };
 		NormalWeaponImage = sub_status.SubMachineGunImage;
 		NormalWeapon_Reroad = sub_status.SubMachinGun_Rrroad;
 		reroad_x = sub_status.reroad_x;
@@ -336,3 +377,5 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 
 	 }
 }
+
+

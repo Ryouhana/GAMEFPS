@@ -6,15 +6,13 @@
 void SceneResult::initialzie() {
 	
 	HelpImage = LoadGraph("graphics/help.jpg");
-	ModelHandle = MV1LoadModel("zombietaro/zombie.pmx");
+	
 	//3Dモデルの読み込み
 	
 	testModel = MV1LoadModel("MEUPistol/MEUPistol.pmd");
 	
-	// 再生時間の初期化
-	PlayTime = 0.0f;
-	// ３Ｄモデルの1番目のアニメーションをアタッチする
-	//>>>>>AttachIndex = MV1AttachAnim(ModelHandle, 4, -1);
+
+	
 	result_Camera = new GmCamera();
 	result_Camera->pos_ = { 0,50,-100 };
 }
@@ -41,8 +39,6 @@ void SceneResult::update(float delta_time)
 
 
 
-	// アタッチしたアニメーションの総再生時間を取得する
-	//>>>>>TotalTime = MV1GetAttachAnimTotalTime(ModelHandle, AttachIndex);
 
 
 
@@ -73,16 +69,13 @@ void SceneResult::update(float delta_time)
 		testrot_ *= tnl::Quaternion::RotationAxis({ 0,1,0 },tnl::ToRadian(5));
 	}
 
-	// 再生時間を進める
-	PlayTime += 1;
+
 
 	// 再生時間がアニメーションの総再生時間に達したら再生時間を０に戻す
 	if (tnl::Input::IsKeyDownTrigger(eKeys::KB_SPACE)) {
-		PlayTime = 0.0f;
+	
 	}
 
-	// 再生時間をセットする
-	//>>>>>>MV1SetAttachAnimTime(ModelHandle, AttachIndex, PlayTime);
 	//第二引数の回転角度をセット
 	
 
@@ -109,17 +102,9 @@ void SceneResult::render()
 	MV1SetRotationMatrix(testModel, rot);
 	MV1SetScale(testModel, { 1.0f,1.0f,1.0f });
 	MV1SetPosition(testModel, vp);
-	DxLib::VECTOR vpzombi;
-	vpzombi = VGet(pos_zombi.x, pos_zombi.y, pos_zombi.z);
-	//rot_(tnl::Quaternion型)をMATRIX型に変換
-	MATRIX rotzombi;
-	memcpy(rotzombi.m, rot_zombi.getMatrix().m, sizeof(float) * 16);
-	MV1SetRotationMatrix(ModelHandle, rotzombi);
-	MV1SetScale(ModelHandle, { 4.0f,4.0f,4.0f });
-	MV1SetPosition(ModelHandle, vpzombi);
+	
 	MV1DrawModel(testModel);
 	
-	MV1DrawModel(ModelHandle);
 	MV1GetDifColorScale(testModel);
 	MV1GetSpcColorScale(testModel);
 	MV1GetEmiColorScale(testModel);

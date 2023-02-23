@@ -68,7 +68,7 @@ void ScenePlay::initialzie() {
 	//ーーーーードーム背景の生成ーーーーーーー
 	Dome_ = dxe::Mesh::CreateSphere(3000);
 	Dome_->setTexture(dxe::Texture::CreateFromFile("graphics/yoru_Valo.jpg"));
-	Dome_->scl_ = { 0.4f,0.4f,0.4f };
+
 	//ーーーーーーー床の生成ーーーーーーーー
 	Floor_ = dxe::Mesh::CreatePlane({ 6000,6000,0 });
 	Floor_->setTexture(dxe::Texture::CreateFromFile("graphics/floor.jpg"));
@@ -91,7 +91,7 @@ void ScenePlay::initialzie() {
 	Player_->pos_ = { 130, 28, 130 };
 
 	stamina = 100;*/
-	
+
 
 }
 
@@ -110,45 +110,51 @@ void ScenePlay::update(float delta_time)
 	hitPlayerFlag = false;
 	for (int i = 0; i < Popcap; i++) {
 		// ーーーーーーーーーーーエネミーのプレイヤー追跡ーーーーーーーーーーー
-		zombi_[i]->pos_;
-		float A = player->GetPostion().x - zombi_[i]->pos_.x;
-		float B = player->GetPostion().z - zombi_[i]->pos_.z;
+		zombie->pos_zombi;
+		float A = player->GetPostion().x - zombie->pos_zombi.x;
+		float B = player->GetPostion().z - zombie->pos_zombi.z;
 		float C = sqrt(A * A + B * B);
-		zombi_[i]->pos_.x += (A / C) * 0.5f;
-		zombi_[i]->pos_.z += (B / C) * 0.5f;
-
-		/*move.normalize();*/
-		int t = tnl::GetXzRegionPointAndOBB(
-			player->GetPostion(),
-			zombi_[i]->pos_,
-			{ obb_x,obb_y,obb_x },
-			zombi_[i]->rot_);
-
-		std::string anim_names[4] = {
-			"walk_back","walk_right", "walk_front", "walk_left"
-		};
-		zombi_[i]->setCurrentAnim(anim_names[t]);
-
+		zombie->pos_zombi.x += (A / C) * 0.08f;
+		zombie->pos_zombi.z += (B / C) * 0.08f;
 
 	}
-	for (int i = 0; i < Popcap; i++) {
+	if (zombie->isAlive()) {
 		// ーーーーーーーーーーーーーーゾンビとプレイヤーの当たり判定ーーーーーーーーーー
-		if (tnl::IsIntersectAABB(zombi_[i]->pos_,
-			{ obb_x,obb_y,obb_x }, player->GetPostion(), { obb_x,obb_y,obb_x })) {
+		if (tnl::IsIntersectAABB(zombie->pos_zombi,
+			{ zombiBox_x,zombiBox_y,zombiBox_x }, player->GetPostion(), { zombiBox_x,zombiBox_y,zombiBox_x })) {
 
 			hitPlayerFlag = true;
 		}
-
-		// ーーーーーーーーーーークロスヘアとゾンビの当たり判定ーーーーーーーーーーーーー
-		tnl::Vector3 a_max = tnl::ToMaxAABB(zombi_[i]->pos_, { obb_x,obb_y,obb_x });
-		tnl::Vector3 a_min = tnl::ToMinAABB(zombi_[i]->pos_, { obb_x,obb_y,obb_x });
 	}
+		
+	
 
+	// // ーーーーーーーーーーークロスヘアとゾンビの当たり判定ーーーーーーーーーーーーー
+	//tnl::Vector3 a_max = tnl::ToMaxAABB(zombie->pos_zombi, { zombiBox_x,zombiBox_y, zombiBox_x });
+	//tnl::Vector3 a_min = tnl::ToMinAABB(zombie->pos_zombi, { zombiBox_x,zombiBox_y, zombiBox_x });
+	//tnl::Vector3 hitt;
+	//if (weapon->mousewheel == weapon->HandGun) {
+	//	if (tnl::IsIntersectRayOBB(player->GetPostion(), (player->ray * 100000.0f), a_max, a_min, zombie->rot_zombi.getMatrix(), hitt) && tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
+	//		// 銃弾が当たったと仮定して、ゾンビにダメージを与える
+	//		zombie->takeDamage(10);
+	//	}
 
-	tnl::Vector3 hitt;
-	/*if (tnl::IsIntersectRayOBB(camera_->pos_, (ray * 100000.0f), a_max, a_min, zombi_[i]->rot_.getMatrix(), hitt) && tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
+	//}
+	//if (weapon->mousewheel == weapon->AssaultRifle) {
+	//	if (tnl::IsIntersectRayOBB(player->GetPostion(), (player->ray * 100000.0f), a_max, a_min, zombie->rot_zombi.getMatrix(), hitt) && tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT) && weapon->shoottime) {
+	//		// 銃弾が当たったと仮定して、ゾンビにダメージを与える
+	//		zombie->takeDamage(20);
+	//	}
+	//}
+	//if (weapon->mousewheel == weapon->SubMachineGun) {
+	//	if (tnl::IsIntersectRayOBB(player->GetPostion(), (player->ray * 100000.0f), a_max, a_min, zombie->rot_zombi.getMatrix(), hitt) && tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
+	//		// 銃弾が当たったと仮定して、ゾンビにダメージを与える
+	//		zombie->takeDamage(15);
+	//	}
+	//}
 
-	}*/
+	mgr->WeaponDamage(player, zombie, weapon);
+
 
 	//ーーーーーーーーーーーープレイヤーの死亡処理ーーーーーーーーーーーーー
 	if (player->hp <= 0) {
@@ -187,14 +193,6 @@ void ScenePlay::update(float delta_time)
 		player->dushFlag = false;
 	}
 	else player->reroadflag = false;
-	/*if (shoot_flag) {
-		if (tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
-			player->hp -= 10;
-		}
-	}*/
-
-
-	
 
 	//----------------------------------------------------------------
 	//カーソルの制御
@@ -219,11 +217,12 @@ void ScenePlay::update(float delta_time)
 
 void ScenePlay::render()
 {
-
-
 	player->Render();
-	
 
+	zombie->Render(player->GetCamera());
+
+	VECTOR player_pos = VGet(player->GetPostion().x, 0, player->GetPostion().z);
+	MV1SetRotationZYAxis(zombie->ZombieModelHandle, VSub(zombie->vpzombi, player_pos), VGet(0.0f, 1.0f, 0.0f), 0.0f);
 
 	//カメラへの描画処理
 	obj_->render(player->GetCamera());
@@ -232,19 +231,18 @@ void ScenePlay::render()
 	
 
 	SetFontSize(20); //文字の大きさを変更
-	zombie->Render();
+	
 	
 	//ゾンビの描画処理
 	for (int i = 0; i < Popcap; i++) {
 
 		zombi_[i]->render(player->GetCamera());
 
-
 	}
 
 	ChangeFont("ＭＳ 明朝");
-	DrawStringEx(rei_x, rei_y, -1, "+");
-
+	
+	DrawOBB(player->GetCamera(), zombie->pos_zombi, zombie->rot_zombi, { zombiBox_x,zombiBox_y,0 });
 
 	SetFontSize(40);
 	DrawStringEx(470, 50, RGB(0, 0, 200), "Round %d", round);
@@ -258,13 +256,10 @@ void ScenePlay::render()
 
 	DrawRotaGraph(28, 666, 0.040f, 0, HpImage, true);
 	DrawRotaGraph(28, 711, 0.17f, 0, StaminaImage, true);
+	
 	weapon->Render();
-	
 
+	DrawStringEx(rei_x, rei_y, -1, "+");
 
-	
-	
-	
-	
 
 }

@@ -99,13 +99,13 @@ void Player::Update(float deltaTime)
 	}
 
 	//ƒŒƒC‚Ì‚â‚Â
-	/*tnl::Vector3 ray = tnl::Vector3::CreateScreenRay(
+	 ray = tnl::Vector3::CreateScreenRay(
 		msv.x,
 		msv.y,
 		mainCamera->screen_w_,
 		mainCamera->screen_h_,
 		mainCamera->view_,
-		mainCamera->proj_);*/
+		mainCamera->proj_);
 }
 
 void Player::Render()

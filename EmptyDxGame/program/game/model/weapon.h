@@ -3,7 +3,7 @@
 #include "../gm_camera.h"
 #include "Player.h"
 #include "../scene/gm_scene_base.h"
-
+#include "../model/gm_model.h"
 class Base;
 class Weapon {
 public:
@@ -21,6 +21,7 @@ public:
 	struct HandGunStatus {
 		int HandGunImage = 0;
 		int HandGunModelHandle = 0;
+	
 		//Š’e–òAÅ‚Š’e–òAƒ}ƒKƒWƒ““à‚Ì’e”Aƒ}ƒKƒWƒ““à‚ÌÅ‘å”
 		int ammunition = 60, maxAmmunition = 60, ammoClip = 15, maxAmmoClip = 15;
 		//•â[‚·‚é‚×‚«’e–ò‚Ì•Ï”‚Æ•â[‚·‚é’e–ò‚Ì•Ï”
@@ -33,11 +34,13 @@ public:
 		int weapon_x = 775;
 		int weapon_y = 720;
 		float weapon_scale = 0.15f;
+		float bang_x = 42.9, bang_y = -28.6f, bang_z = 78.1f;
 	};
 	HandGunStatus hand_status;
 
 	struct SubMachineGunStatus {
 		int SubMachineGunImage = 0;
+		
 		//Š’e–òAÅ‚Š’e–òAƒ}ƒKƒWƒ““à‚Ì’e”Aƒ}ƒKƒWƒ““à‚ÌÅ‘å”
 		int ammunition = 110, maxAmmunition = 110, ammoClip = 25, maxAmmoClip = 25;
 		//•â[‚·‚é‚×‚«’e–ò‚Ì•Ï”‚Æ•â[‚·‚é’e–ò‚Ì•Ï”
@@ -50,12 +53,14 @@ public:
 		int weapon_x = 775;
 		int weapon_y = 720;
 		float weapon_scale = 0.15f;
+		float bang_x = 42.9, bang_y = -28.6f, bang_z = 78.1f;
 	};
 	SubMachineGunStatus sub_status;
 
 	struct AssaultRifleStatus {
 		int AssaultRifleImage = 0;
 		int AssaultModelHandle = 0;
+		
 		//Š’e–òAÅ‚Š’e–òAƒ}ƒKƒWƒ““à‚Ì’e”Aƒ}ƒKƒWƒ““à‚ÌÅ‘å”
 		int ammunition = 90, maxAmmunition = 90, ammoClip = 30, maxAmmoClip = 30;
 		//•â[‚·‚é‚×‚«’e–ò‚Ì•Ï”‚Æ•â[‚·‚é’e–ò‚Ì•Ï”
@@ -68,6 +73,7 @@ public:
 		int weapon_x = 725;
 		int weapon_y = 720;
 		float weapon_scale = 0.08f;
+		float bang_x = 20.9f, bang_y = -18.7f, bang_z = 78.1f;
 		
 	};
 	AssaultRifleStatus assault_status;
@@ -77,7 +83,9 @@ public:
 	tnl::Quaternion assaultrot_;
 	tnl::Vector3 assaultpos_;
 
-	
+	GmCamera* weapon = nullptr;
+	dxe::Mesh* BangHandle = nullptr;
+
 	//•Ší‚Ì‰æ‘œ
 	int HandGunImage = 0;
 	int SubMachineGunImage = 0;
@@ -108,17 +116,20 @@ public:
 	float reroadtime = 0.f;
 	float x = 0.f, y = 0.f, z = 0.f;
 	float angleX = 0.f, angleY = 0.f, angleZ = 0.f;
+	float bang_x = 0, bang_y = 0, bang_z = 0;
+	float bang_scalex = 0, bang_scaley = 0;
 	double normalreroad_time = 0;
 	void Initialize();
 	void Update(float deltaTime);
 	void Render();
 	void SwitchWeapon(WeaponType weapontype);
+
 	
 	bool HandGunFlag = false;
 	bool SubMachineGunFlah = false;
 	bool AssaultRifleFlag = false;
 	bool GunReroad = false;
-	GmCamera* weapon = nullptr;
+	
 private:
 	
 };

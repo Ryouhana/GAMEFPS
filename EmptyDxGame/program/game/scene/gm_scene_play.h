@@ -57,7 +57,7 @@ public:
 	float floor_x = 0, floor_y = 0;
 	float tree_x = 0;
 	float enemy_v = 0;
-	
+	float zombiBox_x = 40, zombiBox_y = 280;
 
 	bool go_guns = false;
 	bool hitPlayerFlag = false;

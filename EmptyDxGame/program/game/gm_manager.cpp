@@ -100,6 +100,31 @@ void GameManager::update(float delta_time) {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
+void GameManager::WeaponDamage(Player* player, Zombie* zombie, Weapon* weapon) {
+
+	tnl::Vector3 a_max = tnl::ToMaxAABB(zombie->pos_zombi, { zombie->zombiBox_x,zombie->zombiBox_y, zombie->zombiBox_x });
+	tnl::Vector3 a_min = tnl::ToMinAABB(zombie->pos_zombi, { zombie->zombiBox_x,zombie->zombiBox_y, zombie->zombiBox_x });
+	tnl::Vector3 hitt;
+	if (weapon->mousewheel == weapon->HandGun) {
+
+		if (tnl::IsIntersectRayOBB(player->GetPostion(), (player->ray * 100000.0f), a_max, a_min, zombie->rot_zombi.getMatrix(), hitt) && tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT) && !weapon->GunReroad && weapon->shoottime == 0) {
+			// e’e‚ª“–‚½‚Á‚½‚Æ‰¼’è‚µ‚ÄAƒ]ƒ“ƒr‚Éƒ_ƒ[ƒW‚ð—^‚¦‚é
+			zombie->takeDamage(10);
+		}
+	}
+	if (weapon->mousewheel == weapon->AssaultRifle) {
+		if (tnl::IsIntersectRayOBB(player->GetPostion(), (player->ray * 100000.0f), a_max, a_min, zombie->rot_zombi.getMatrix(), hitt) && tnl::Input::IsMouseDown(tnl::Input::eMouse::LEFT) && !weapon->GunReroad && weapon->shoottime == 0) {
+			// e’e‚ª“–‚½‚Á‚½‚Æ‰¼’è‚µ‚ÄAƒ]ƒ“ƒr‚Éƒ_ƒ[ƒW‚ð—^‚¦‚é
+			zombie->takeDamage(20);
+		}
+	}
+	if (weapon->mousewheel == weapon->SubMachineGun) {
+		if (tnl::IsIntersectRayOBB(player->GetPostion(), (player->ray * 100000.0f), a_max, a_min, zombie->rot_zombi.getMatrix(), hitt) && tnl::Input::IsMouseDown(tnl::Input::eMouse::LEFT) && !weapon->GunReroad && weapon->shoottime == 0) {
+			// e’e‚ª“–‚½‚Á‚½‚Æ‰¼’è‚µ‚ÄAƒ]ƒ“ƒr‚Éƒ_ƒ[ƒW‚ð—^‚¦‚é
+			zombie->takeDamage(15);
+		}
+	}
+}
 
 
 

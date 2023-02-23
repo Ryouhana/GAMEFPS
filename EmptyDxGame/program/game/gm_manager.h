@@ -1,5 +1,8 @@
 #pragma once
 #include "../dxlib_ext/dxlib_ext.h"
+#include "../game/model/Player.h"
+#include "../game/model/weapon.h"
+#include "../game/model/Zombie.h"
 
 class SceneBase;
 class GameManager {
@@ -47,7 +50,7 @@ public:
 	// arg1... SceneBase を継承したクラスインスタンス
 	void chengeScene(SceneBase* next);
 
-
+	void WeaponDamage(Player* player, Zombie* zombie, Weapon* weapon);
 
 
 public:

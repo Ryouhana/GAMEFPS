@@ -2,6 +2,7 @@
 #include "../../dxlib_ext/dxlib_ext.h"
 #include "../gm_camera.h"
 #include "../model/weapon.h"
+#include "../model/Zombie.h"
 
 
 class Player
@@ -23,6 +24,7 @@ public:
 	void Update(float deltaTime);
 	void Render();
 	tnl::Vector3 GetPostion();
+	tnl::Vector3 ray;
 	GmCamera* GetCamera();
 
 	bool dushFlag = false;
