@@ -12,22 +12,27 @@ ScenePlay::ScenePlay()
 {
 	player = new Player({ 100, 60, 0 });
 	weapon = new Weapon();
-	zombie = new Zombie();
+	
 	
 	//zombie->Initialize();
 	
 }
 
 ScenePlay::~ScenePlay() {
-
+	
+		//for (auto itr = zombieList.begin(); itr != zombieList.end();) {
+		//	//auto itr = zombieList.begin();
+		//	zombieList.erase(itr);
+		//}
+	
 	delete obj_;
 }
 
 void ScenePlay::initialzie() {
-	
+	GameManager* mgr = GameManager::GetInstance();
 	weapon->Initialize();
 	
-
+	
 	player->hp = 100;
 	//weapon->Initialize();
 
@@ -92,70 +97,38 @@ void ScenePlay::initialzie() {
 
 	stamina = 100;*/
 
-
+	
 }
 
 void ScenePlay::update(float delta_time)
 {
+	GameManager* mgr = GameManager::GetInstance();
 	
 	player->Update(delta_time);
 	weapon->Update(delta_time);
-	zombie->Update(delta_time);
+	
 	SetMouseDispFlag(FALSE);// カーソルの非表示
-	GameManager* mgr = GameManager::GetInstance();
+	
+	
+	
+
+	updateZombies(delta_time);
 
 
 	tnl::Vector3 hit;
 
-	hitPlayerFlag = false;
+	
 	for (int i = 0; i < Popcap; i++) {
 		// ーーーーーーーーーーーエネミーのプレイヤー追跡ーーーーーーーーーーー
-		zombie->pos_zombi;
-		float A = player->GetPostion().x - zombie->pos_zombi.x;
+	/*	float A = player->GetPostion().x - zombie->pos_zombi.x;
 		float B = player->GetPostion().z - zombie->pos_zombi.z;
 		float C = sqrt(A * A + B * B);
 		zombie->pos_zombi.x += (A / C) * 0.08f;
-		zombie->pos_zombi.z += (B / C) * 0.08f;
+		zombie->pos_zombi.z += (B / C) * 0.08f;*/
 
 	}
-	if (zombie->isAlive()) {
-		// ーーーーーーーーーーーーーーゾンビとプレイヤーの当たり判定ーーーーーーーーーー
-		if (tnl::IsIntersectAABB(zombie->pos_zombi,
-			{ zombiBox_x,zombiBox_y,zombiBox_x }, player->GetPostion(), { zombiBox_x,zombiBox_y,zombiBox_x })) {
-
-			hitPlayerFlag = true;
-		}
-	}
-		
 	
-
-	// // ーーーーーーーーーーークロスヘアとゾンビの当たり判定ーーーーーーーーーーーーー
-	//tnl::Vector3 a_max = tnl::ToMaxAABB(zombie->pos_zombi, { zombiBox_x,zombiBox_y, zombiBox_x });
-	//tnl::Vector3 a_min = tnl::ToMinAABB(zombie->pos_zombi, { zombiBox_x,zombiBox_y, zombiBox_x });
-	//tnl::Vector3 hitt;
-	//if (weapon->mousewheel == weapon->HandGun) {
-	//	if (tnl::IsIntersectRayOBB(player->GetPostion(), (player->ray * 100000.0f), a_max, a_min, zombie->rot_zombi.getMatrix(), hitt) && tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
-	//		// 銃弾が当たったと仮定して、ゾンビにダメージを与える
-	//		zombie->takeDamage(10);
-	//	}
-
-	//}
-	//if (weapon->mousewheel == weapon->AssaultRifle) {
-	//	if (tnl::IsIntersectRayOBB(player->GetPostion(), (player->ray * 100000.0f), a_max, a_min, zombie->rot_zombi.getMatrix(), hitt) && tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT) && weapon->shoottime) {
-	//		// 銃弾が当たったと仮定して、ゾンビにダメージを与える
-	//		zombie->takeDamage(20);
-	//	}
-	//}
-	//if (weapon->mousewheel == weapon->SubMachineGun) {
-	//	if (tnl::IsIntersectRayOBB(player->GetPostion(), (player->ray * 100000.0f), a_max, a_min, zombie->rot_zombi.getMatrix(), hitt) && tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT)) {
-	//		// 銃弾が当たったと仮定して、ゾンビにダメージを与える
-	//		zombie->takeDamage(15);
-	//	}
-	//}
-
-	mgr->WeaponDamage(player, zombie, weapon);
-
-
+	
 	//ーーーーーーーーーーーープレイヤーの死亡処理ーーーーーーーーーーーーー
 	if (player->hp <= 0) {
 		player->hp = 0;
@@ -170,9 +143,7 @@ void ScenePlay::update(float delta_time)
 		player->GetCamera()->c_rot.x -= 0.001f;
 		if (g_oTime > 3) {
 			mgr->chengeScene(new SceneGameOver());
-			
 			g_oTime = 0;
-			
 		}
 	}
 
@@ -182,10 +153,7 @@ void ScenePlay::update(float delta_time)
 
 	}*/
 
-	//ーーーーーーープレイヤーと敵が接触した時のhp減少フラグーーーーーーーーー
-	if (hitPlayerFlag) {
-		player->hp -= 2;
-	}
+
 
 	//ーーーーーーーーーリロードしてる最中は走れないようにする処理ーーーーーーー
 	if (weapon->GunReroad) {
@@ -211,18 +179,18 @@ void ScenePlay::update(float delta_time)
 		
 	}
 	
-
-
 }
 
 void ScenePlay::render()
 {
+	ZombieSpown(8);
+	GameManager* mgr = GameManager::GetInstance();
 	player->Render();
 
-	zombie->Render(player->GetCamera());
 
-	VECTOR player_pos = VGet(player->GetPostion().x, 0, player->GetPostion().z);
-	MV1SetRotationZYAxis(zombie->ZombieModelHandle, VSub(zombie->vpzombi, player_pos), VGet(0.0f, 1.0f, 0.0f), 0.0f);
+
+	//VECTOR player_pos = VGet(player->GetPostion().x, 0, player->GetPostion().z);
+	//MV1SetRotationZYAxis(zombie->ZombieModelHandle, VSub(zombie->vpzombi, player_pos), VGet(0.0f, 1.0f, 0.0f), 0.0f);
 
 	//カメラへの描画処理
 	obj_->render(player->GetCamera());
@@ -242,7 +210,7 @@ void ScenePlay::render()
 
 	ChangeFont("ＭＳ 明朝");
 	
-	DrawOBB(player->GetCamera(), zombie->pos_zombi, zombie->rot_zombi, { zombiBox_x,zombiBox_y,0 });
+	//DrawOBB(player->GetCamera(), zombie->pos_zombi, zombie->rot_zombi, { zombiBox_x,zombiBox_y,0 });
 
 	SetFontSize(40);
 	DrawStringEx(470, 50, RGB(0, 0, 200), "Round %d", round);
@@ -256,10 +224,52 @@ void ScenePlay::render()
 
 	DrawRotaGraph(28, 666, 0.040f, 0, HpImage, true);
 	DrawRotaGraph(28, 711, 0.17f, 0, StaminaImage, true);
-	
+	renderZombies(player->GetCamera());
 	weapon->Render();
 
 	DrawStringEx(rei_x, rei_y, -1, "+");
 
 
+}
+
+void ScenePlay::ZombieSpown(int spowncount) {
+	if (!spownFlag) {
+		for (int i = 0; i < spowncount; i++) {
+			std::shared_ptr<Zombie> zombie = std::make_shared<Zombie>(Zombie());
+			zombie->pos_zombi = { 100 * (float)i,0,0 };
+			zombiListSmart.push_back(zombie);
+		}
+		spownFlag = true;
+	}
+	
+}
+
+void ScenePlay::updateZombies(float deltatime) {
+	
+	auto itr = zombiListSmart.begin();
+	while (itr != zombiListSmart.end()) {
+		auto zombie = *itr;
+		zombie->Update(deltatime,player,weapon);
+		
+		if (!zombie->isAlive()) {			
+			itr = zombiListSmart.erase(itr);
+		}
+		else {
+			++itr;
+		}
+	}
+}
+
+void ScenePlay::renderZombies(GmCamera* player) {
+	auto itr = zombiListSmart.begin();
+	while (itr != zombiListSmart.end()) {
+		auto zombie = *itr;
+		zombie->Render(player);
+		if (!zombie->isAlive()) {
+			itr = zombiListSmart.erase(itr);
+		}
+		else {
+			++itr;
+		}
+	}
 }

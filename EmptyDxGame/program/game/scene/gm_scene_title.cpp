@@ -33,7 +33,7 @@ public:
 	{
 		GameManager* mgr = GameManager::GetInstance();
 		int mouse_x, mouse_y;
-
+		ChangeVolumeSoundMem(160, mgr->juusei);
 
 		GetMousePoint(&mouse_x, &mouse_y);	//マウスの座標取得
 		if (m_x < mouse_x && mouse_x < m_x + GetDrawStringWidth(m_name, strlen(m_name)) &&

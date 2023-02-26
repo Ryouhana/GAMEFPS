@@ -1,8 +1,7 @@
 #pragma once
-#include "../../dxlib_ext/dxlib_ext.h"
 #include "../gm_camera.h"
 #include "../model/weapon.h"
-#include "../model/Zombie.h"
+
 
 
 class Player

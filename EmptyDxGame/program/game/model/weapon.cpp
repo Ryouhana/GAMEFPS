@@ -1,18 +1,20 @@
 #include "weapon.h"
 #include "../gm_manager.h"
 #include "../model/Player.h"
-#include "Effect.h"
 #include "DxLib.h"
 
 using namespace std;
 
 Weapon::Weapon() {
+	sub_status.SubModelHandle = MV1LoadModel("MP5_MMD/MP5RAS.pmx");
 	hand_status.HandGunModelHandle = MV1LoadModel("MEUPistol/MEUPistol.pmd");
+	assault_status.AssaultModelHandle = MV1LoadModel("XM177/Xm177.pmx");
+	
 	hand_status.HandGunImage = LoadGraph("graphics/Handgun.png");
 	sub_status.SubMachineGunImage = LoadGraph("graphics/MP5.png");
 	assault_status.AssaultRifleImage = LoadGraph("graphics/XM177.png");
 	
-	assault_status.AssaultModelHandle = MV1LoadModel("XM177/Xm177.pmx");
+	
 	Tama_0 = LoadSoundMem("sound/Gun_SE/no.mp3");
 	HandGun_Reroad = LoadSoundMem("sound/Gun_SE/HandgunReroad.mp3");
 	debug = LoadGraph("graphics/Ring.png");
@@ -42,6 +44,7 @@ void Weapon::Initialize() {
 void Weapon::Update(float deltaTime) {
 	
 	GameManager* mgr = GameManager::GetInstance();
+	
 	/*SetLightEnable(FALSE);*/
 	int wheelMax = 3;
 	int wheelMin = 1;
@@ -149,40 +152,14 @@ void Weapon::Update(float deltaTime) {
 		}
 
 	}
-	// ３Ｄモデルの描画
-	if (tnl::Input::IsKeyDown(eKeys::KB_UP)) {
-		BangHandle->pos_.y -= 1.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_DOWN)) {
-		BangHandle->pos_.y += 1.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) {
-		BangHandle->pos_.x -= 1.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) {
-		BangHandle->pos_.x += 1.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_Q)) {
-		BangHandle->pos_.z -= 1.1f;
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_E)) {
-		BangHandle->pos_.z += 1.1f;
-	}
 	
-	if (tnl::Input::IsKeyDown(eKeys::KB_Z)) {
-		bang_scaley += 1.0f;
 
-	}
-	else if (tnl::Input::IsKeyDown(eKeys::KB_X)) {
-		bang_scalex += 1.0f;
-	}
-
-	if (BangHandle->scl_.x >= 100.f) {
-		BangHandle->scl_.x = 0;
-	}
-	if (BangHandle->scl_.y >= 100.f) {
-		BangHandle->scl_.y = 0;
-	}
+	//if (BangHandle->scl_.x >= 100.f) {
+	//	BangHandle->scl_.x = 0;
+	//}
+	//if (BangHandle->scl_.y >= 100.f) {
+	//	BangHandle->scl_.y = 0;
+	//}
 
 		
 		
@@ -224,9 +201,17 @@ void Weapon::Render() {
 	//rot_(tnl::Quaternion型)をMATRIX型に変換
 	MATRIX assaultrot;
 	memcpy(assaultrot.m, assaultrot_.getMatrix().m, sizeof(float) * 16);
+
+	DxLib::VECTOR subvp;
+	subvp = VGet(subpos_.x, subpos_.y, subpos_.z);
+	//rot_(tnl::Quaternion型)をMATRIX型に変換
+	MATRIX subrot;
+	memcpy(subrot.m, subrot_.getMatrix().m, sizeof(float) * 16);
+
 	for (int i = 0; i < 100; i++) {
 		MV1SetMaterialOutLineWidth(assault_status.AssaultModelHandle, i, 0);
 		MV1SetMaterialOutLineWidth(hand_status.HandGunModelHandle, i, 0);
+		MV1SetMaterialOutLineWidth(sub_status.SubModelHandle, i, 0);
 	}
 
 	MV1SetRotationMatrix(assault_status.AssaultModelHandle, assaultrot);
@@ -236,6 +221,10 @@ void Weapon::Render() {
 	MV1SetRotationMatrix(hand_status.HandGunModelHandle, handrot);
 	MV1SetScale(hand_status.HandGunModelHandle, { 1.0f,1.0f,1.0f });
 	MV1SetPosition(hand_status.HandGunModelHandle, handvp);
+
+	MV1SetRotationMatrix(sub_status.SubModelHandle, subrot);
+	MV1SetScale(sub_status.SubModelHandle, { 1.0f,1.0f,1.0f });
+	MV1SetPosition(sub_status.SubModelHandle, subvp);
 
 	
 	if (mousewheel == AssaultRifle) {
@@ -248,10 +237,42 @@ void Weapon::Render() {
 			BangHandle->render(weapon);
 		}
 	}
+	if (mousewheel == SubMachineGun) {
+		if (!GunReroad && shoottime == 0 && ammoClip > 0) {
+			BangHandle->render(weapon);
+		}
+	}
 	
+	// ３Ｄモデルの描画
+	//if (tnl::Input::IsKeyDown(eKeys::KB_UP)) {
+	//	BangHandle->pos_.y -= 1.1f;
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_DOWN)) {
+	//	BangHandle->pos_.y += 1.1f;
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_LEFT)) {
+	//	BangHandle->pos_.x -= 1.1f;
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_RIGHT)) {
+	//	BangHandle->pos_.x += 1.1f;
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_Q)) {
+	//	BangHandle->pos_.z-= 1.1f;
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_E)) {
+	//	BangHandle->pos_.z += 1.1f;
+	//}
+
+	//if (tnl::Input::IsKeyDown(eKeys::KB_Z)) {
+	//	subrot_ *= tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(1));
+
+	//}
+	//else if (tnl::Input::IsKeyDown(eKeys::KB_X)) {
+	//	subrot_ *= tnl::Quaternion::RotationAxis({ 1,0,0 }, tnl::ToRadian(1));
+	//}
 	
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "x=%.1f y=%.1f z=%.1f", BangHandle->pos_.x, BangHandle->pos_.y, BangHandle->pos_.z);
-	DrawFormatString(0, 200, GetColor(255, 255, 255), "x=%.1f y=%.1f", bang_scalex, bang_scaley);
+	DrawFormatString(0, 200, GetColor(255, 255, 255), "x=%.1f y=%.1f", subrot_.x, subrot_.y);
 	
 }
 
@@ -260,7 +281,9 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 
 	GameManager* mgr = GameManager::GetInstance();
 	switch (weapontype) {
+//ーーーーーーーーアサルトライフルの時の処理ーーーーーーー
 	case WeaponType::AssaultRifle:
+		ChangeVolumeSoundMem(160, mgr->juusei);
 		if (!GunReroad) {
 			MV1DrawModel(assault_status.AssaultModelHandle);
 		}
@@ -279,12 +302,12 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 		bang_y = assault_status.bang_y;
 		bang_z = assault_status.bang_z;
 		shoottime++;
-		
+
 		if (tnl::Input::IsMouseDown(tnl::Input::eMouse::LEFT) && !GunReroad && shoottime >= assault_status.shoottime) {
 
 			if (ammoClip > 0) {
 				PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);
-			
+
 				ammoClip--;
 				if (mousewheel == AssaultRifle) {
 					demo_assaultammoClip = ammoClip;
@@ -294,56 +317,20 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 			if (ammoClip <= 0) {
 				ammoClip = 0;
 				PlaySoundMem(Tama_0, DX_PLAYTYPE_BACK);
-				
+
 			}
 			shoottime = 0;
 		}
 		break;
-	case WeaponType::HandGun:
+//ーーーーーーサブマシンガンの時の処理ーーーーーーー
+	case WeaponType::SubMachineGun:
 		
 		if (!GunReroad) {
-			MV1DrawModel(hand_status.HandGunModelHandle);
+			MV1DrawModel(sub_status.SubModelHandle);
 		}
 		BangHandle->pos_ = { bang_x, bang_y, bang_z };
-		handrot_ = tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(180));
-		handpos_.x = 1.2f, handpos_.y = -1.2f, handpos_.z = -96.6f;
-		NormalWeaponImage = hand_status.HandGunImage;
-		NormalWeapon_Reroad = hand_status.HandGun_Reroad;
-		reroad_x = hand_status.reroad_x;
-		reroad_y = hand_status.reroad_y;
-		//ハンドガンの画像位置と大きさを代入
-		weapon_x = hand_status.weapon_x;
-		weapon_y = hand_status.weapon_y;
-		weapon_scale = hand_status.weapon_scale;
-		bang_x = hand_status.bang_x;
-		bang_y = hand_status.bang_y;
-		bang_z = hand_status.bang_z;
-		shoottime++;
-		if (tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT) && !GunReroad && shoottime >= hand_status.shoottime) {
-			
-			if (ammoClip > 0 && ammoClip != 0) {
-				PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);
-
-				ammoClip--;
-				if (mousewheel == HandGun) {
-					demo_handammoClip = ammoClip;
-				}
-			}
-			if (ammoClip <= 0) {
-				
-					
-				PlaySoundMem(Tama_0, DX_PLAYTYPE_BACK);
-				ammoClip = 0;
-				
-
-			}
-			
-			
-			shoottime = 0;
-		}
-		break;
-	case WeaponType::SubMachineGun:
-		BangHandle->pos_ = { bang_x, bang_y, bang_z };
+		subrot_ = tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(180));
+		subpos_.x = 2.2f, subpos_.y = -2.2f, subpos_.z = -93.5f;
 		NormalWeaponImage = sub_status.SubMachineGunImage;
 		NormalWeapon_Reroad = sub_status.SubMachinGun_Rrroad;
 		reroad_x = sub_status.reroad_x;
@@ -352,6 +339,9 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 		weapon_x = sub_status.weapon_x;
 		weapon_y = sub_status.weapon_y;
 		weapon_scale = sub_status.weapon_scale;
+		bang_x = sub_status.bang_x;
+		bang_y = sub_status.bang_y;
+		bang_z = sub_status.bang_z;
 		shoottime++;
 		if (tnl::Input::IsMouseDown(tnl::Input::eMouse::LEFT) && !GunReroad && shoottime >= sub_status.shoottime) {
 
@@ -372,10 +362,53 @@ void Weapon::SwitchWeapon(WeaponType weapontype) {
 			shoottime = 0;
 		}
 		break;
+//ーーーハンドガンの時の処理ーーーーーーー
+	case WeaponType::HandGun:
+
+		if (!GunReroad) {
+			MV1DrawModel(hand_status.HandGunModelHandle);
+		}
+		BangHandle->pos_ = { bang_x, bang_y, bang_z };
+		handrot_ = tnl::Quaternion::RotationAxis({ 0,1,0 }, tnl::ToRadian(180));
+		handpos_.x = 1.2f, handpos_.y = -1.2f, handpos_.z = -96.6f;
+		NormalWeaponImage = hand_status.HandGunImage;
+		NormalWeapon_Reroad = hand_status.HandGun_Reroad;
+		reroad_x = hand_status.reroad_x;
+		reroad_y = hand_status.reroad_y;
+		//ハンドガンの画像位置と大きさを代入
+		weapon_x = hand_status.weapon_x;
+		weapon_y = hand_status.weapon_y;
+		weapon_scale = hand_status.weapon_scale;
+		bang_x = hand_status.bang_x;
+		bang_y = hand_status.bang_y;
+		bang_z = hand_status.bang_z;
+		shoottime++;
+		if (tnl::Input::IsMouseTrigger(tnl::Input::eMouseTrigger::IN_LEFT) && !GunReroad && shoottime >= hand_status.shoottime) {
+
+			if (ammoClip > 0 && ammoClip != 0) {
+				PlaySoundMem(mgr->juusei, DX_PLAYTYPE_BACK);
+
+				ammoClip--;
+				if (mousewheel == HandGun) {
+					demo_handammoClip = ammoClip;
+				}
+			}
+			if (ammoClip <= 0) {
+
+
+				PlaySoundMem(Tama_0, DX_PLAYTYPE_BACK);
+				ammoClip = 0;
+
+
+			}
+
+
+			shoottime = 0;
+		}
+		break;
 	default:
 		return;
 
-	 }
+	}
 }
-
 

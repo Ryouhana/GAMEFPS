@@ -43,6 +43,7 @@
     <ClCompile Include="program\game\model\gm_model.cpp" />
     <ClCompile Include="program\game\model\gm_parts.cpp" />
     <ClCompile Include="program\game\model\Player.cpp" />
+    <ClCompile Include="program\game\model\Shop.cpp" />
     <ClCompile Include="program\game\model\weapon.cpp" />
     <ClCompile Include="program\game\model\Zombie.cpp" />
     <ClCompile Include="program\game\scene\gm_scene_gameover.cpp" />
@@ -78,6 +79,7 @@
     <ClInclude Include="program\game\model\gm_model.h" />
     <ClInclude Include="program\game\model\gm_parts.h" />
     <ClInclude Include="program\game\model\Player.h" />
+    <ClInclude Include="program\game\model\Shop.h" />
     <ClInclude Include="program\game\model\weapon.h" />
     <ClInclude Include="program\game\model\Zombie.h" />
     <ClInclude Include="program\game\scene\gm_scene_base.h" />

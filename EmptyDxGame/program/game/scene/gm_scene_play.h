@@ -4,6 +4,7 @@
 #include "../model/Zombie.h"
 #include "../model/gm_model.h"
 #include "../gm_camera.h"
+#include <memory>
 
 
 class GmCamera;
@@ -19,8 +20,13 @@ public:
 	void initialzie() override;
 	void update(float delta_time) override;
 	void render() override;
+	void ZombieSpown(int spowncount);
+
+	void updateZombies(float deltatime);
+
+	void renderZombies(GmCamera* player);
 	AnimSprite3D* zombi_[500] = {};
-	Zombie* zombie = nullptr;
+	
 	Player* player = nullptr;
 	Weapon* weapon = nullptr;
 
@@ -60,12 +66,13 @@ public:
 	float zombiBox_x = 40, zombiBox_y = 280;
 
 	bool go_guns = false;
-	bool hitPlayerFlag = false;
+	bool spownFlag = false;
 	bool shoot_flag = false;
+
+	std::list<Zombie*> zombieList;
+	std::list<std::shared_ptr<Zombie>> zombiListSmart;
+
 	
-
-
-
 
 };
 

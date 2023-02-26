@@ -9,7 +9,7 @@ class Weapon {
 public:
 	enum WeaponType {
 		HandGun = 1,
-		SubMachineGun,
+		SubMachineGun = 2,
 		AssaultRifle
 
 	};
@@ -40,7 +40,7 @@ public:
 
 	struct SubMachineGunStatus {
 		int SubMachineGunImage = 0;
-		
+		int SubModelHandle = 0;
 		//Š’e–òAÅ‚Š’e–òAƒ}ƒKƒWƒ““à‚Ì’e”Aƒ}ƒKƒWƒ““à‚ÌÅ‘å”
 		int ammunition = 110, maxAmmunition = 110, ammoClip = 25, maxAmmoClip = 25;
 		//•â[‚·‚é‚×‚«’e–ò‚Ì•Ï”‚Æ•â[‚·‚é’e–ò‚Ì•Ï”
@@ -53,7 +53,7 @@ public:
 		int weapon_x = 775;
 		int weapon_y = 720;
 		float weapon_scale = 0.15f;
-		float bang_x = 42.9, bang_y = -28.6f, bang_z = 78.1f;
+		float bang_x = 35.2, bang_y = -23.1f, bang_z = 75.9f;
 	};
 	SubMachineGunStatus sub_status;
 
@@ -82,6 +82,8 @@ public:
 	tnl::Vector3 handpos_;
 	tnl::Quaternion assaultrot_;
 	tnl::Vector3 assaultpos_;
+	tnl::Quaternion subrot_;
+	tnl::Vector3 subpos_;
 
 	GmCamera* weapon = nullptr;
 	dxe::Mesh* BangHandle = nullptr;

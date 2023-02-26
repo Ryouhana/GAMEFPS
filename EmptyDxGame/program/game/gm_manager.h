@@ -30,6 +30,8 @@ private:
 	// 画面遷移( フェードアウトプロセス )
 	bool seqSceneOutTransition(const float delta_time);
 
+	bool one = false;
+
 	// 現在のシーン
 	SceneBase* scene_now_ = nullptr;
 	// 予約シーン
@@ -50,7 +52,9 @@ public:
 	// arg1... SceneBase を継承したクラスインスタンス
 	void chengeScene(SceneBase* next);
 
-	void WeaponDamage(Player* player, Zombie* zombie, Weapon* weapon);
+
+
+
 
 
 public:
@@ -79,7 +83,7 @@ public:
 	int TitleMusic = 0;
 
 
-
+	
 
 	float box_x[5] = { -175,-175,-175,-160,-130 }, box_y[5] = { 90,50,0,-35,-40 }, box_z[3] = { -30,-80,-1 };
 	float c_x = 0, c_y = 0, c_z = 0;
